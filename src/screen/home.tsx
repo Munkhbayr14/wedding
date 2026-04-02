@@ -268,14 +268,14 @@ export default function Home() {
                 <p className="flex text-[15px] justify-end text-gray-400">
                   Сүйт залуу
                 </p>
-                <h1 className="text-3xl text-gray-600">Барсбаатар</h1>
+                <h1 className="text-3xl text-gray-600">bilguun</h1>
               </div>
               <span className="text-2xl text-[#f1a993] mx-1">♥</span>
               <div>
                 <p className="flex text-[15px] justify-start text-gray-400">
                   Сүйт бүсгүй
                 </p>
-                <h1 className="text-3xl text-gray-600">Одончимэг</h1>
+                <h1 className="text-3xl text-gray-600">urnaa</h1>
               </div>
             </div>
           </motion.div>
