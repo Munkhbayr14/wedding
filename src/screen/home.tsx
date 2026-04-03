@@ -10,14 +10,17 @@ import b_7 from "../barsaa/b-7.jpg";
 import b_8 from "../barsaa/b-8.jpg";
 import b_9 from "../barsaa/b-9.jpg";
 import covers from "../barsaa/covers.jpg";
-import dans from "../barsaa/dans.png";
+import dans from "../other-image/thank you .png";
 import musicSrc from "../music/Katawaredoki.mp3";
 import leaf from "../other-image/leaf.png";
 import longLeaf from "../other-image/longLeaf.png";
+import longsLeaf from "../other-image/lognsLeaf.png";
 import boxIcon from "../other-image/boxIcon.png";
 import weddingBanner from "../other-image/weddingBanner.png";
 import weddingPhoto from "../other-image/weddingPhoto.png";
 import SakuraFalling from "./SakuraFalling";
+import WeddingCalendar from "./weddingCalendar";
+import CoupleContact from "./coupleContact";
 
 const AnimatePresence = FramerAnimatePresence as React.FC<{
   children?: React.ReactNode;
@@ -268,14 +271,14 @@ export default function Home() {
                 <p className="flex text-[15px] justify-end text-gray-400">
                   Сүйт залуу
                 </p>
-                <h1 className="text-3xl text-gray-600">bilguun</h1>
+                <h1 className="text-3xl text-gray-600"> Барсбаатарs </h1>
               </div>
               <span className="text-2xl text-[#f1a993] mx-1">♥</span>
               <div>
                 <p className="flex text-[15px] justify-start text-gray-400">
                   Сүйт бүсгүй
                 </p>
-                <h1 className="text-3xl text-gray-600">urnaa</h1>
+                <h1 className="text-3xl text-gray-600">Одончимэгs</h1>
               </div>
             </div>
           </motion.div>
@@ -407,24 +410,7 @@ export default function Home() {
             </div>
           </motion.div>
 
-          <motion.div
-            {...getFadeInUp(scrollRef)}
-            className="bg-[#fcf5eb] p-10 text-center text-gray-500 italic"
-          >
-            <p className="text-sm font-serif leading-relaxed">
-              "Хайр тэвчээртэй энэрэнгүй билээ... Хайр хэзээ ч дуусдаггүй."
-            </p>
-            <p className="mt-4 font-bold not-italic text-[10px] tracking-widest text-gray-400">
-              1 КОРИНТ 13:4-8
-            </p>
-          </motion.div>
-
-          {/* ── Gallery 3×3 ── */}
-          <h2 className="font-serif text-center py-8 text-2xl text-gray-700">
-            ♥ Зураг ♥
-          </h2>
-
-          <div className="grid grid-cols-3 gap-1">
+          <div className="grid grid-cols-3 gap-1 p-4">
             {GALLERY_IMAGES.map((img, index) => (
               <motion.button
                 key={index}
@@ -453,51 +439,68 @@ export default function Home() {
           <motion.button
             whileTap={{ scale: 0.96 }}
             onClick={() => openGallery(0)}
-            className="mt-6 mx-4 w-[calc(100%-2rem)] py-3 border border-[#e7b596] text-[#e7b596] rounded-full font-serif text-sm tracking-wider hover:bg-[#e7b596] hover:text-white transition-colors"
+            className="flex flex-col justify-center items-center mt-6 mx-auto px-10 py-2 border border-[#e7b596] text-[#e7b596] font-elegant font-thin text-sm tracking-wider"
           >
-            Бүх зургийг үзэх ♥
+            Зураг харах +
           </motion.button>
 
+          <div className="bg-white pt-3 h-auto w-full">
+            <h1 className="flex font-elegant font-thin justify-center pt-10 text-[20px] mb-10">
+              LOCATION
+            </h1>
+            <div className="w-full px-5 pb-5">
+              <iframe
+                title="Улаанбаатар зүүн чуулганы байршил"
+                className="w-full rounded-2xl shadow-sm"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10695.247020883977!2d106.95975198065267!3d47.920679739523756!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5d96911c8ad90ded%3A0x154015dc33d0e30a!2z0KPQu9Cw0LDQvdCx0LDQsNGC0LDRgCDQsdCw0L_RgtC40YHRgiDQt9Kv0q_QvSDRh9GD0YPQu9Cz0LDQvQ!5e0!3m2!1sen!2smn!4v1698212444861!5m2!1sen!2smn"
+                height="300"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+            <p className=" font-elegant font-thin text-center text-[18px] mt-7">
+              {" "}
+              Улаанбаатар Зүүн чуулган{" "}
+            </p>
+            <p className=" font-elegant font-thin text-center  mb-12">
+              3 давхар Их танхим
+            </p>
+          </div>
+
+          <hr className="border-gray-200" />
+
           <motion.div
-            {...getFadeInUp(scrollRef)}
-            className="mx-6 p-8 bg-white border border-gray-100 rounded-2xl shadow-sm mb-6 mt-6"
+            initial={{ opacity: 0, y: 40 }}
+            animate={showSplash ? { opacity: 0, y: 40 } : { opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 1 }}
+            className="text-center text-gray-600 bg-white mt-16"
           >
-            <h2 className="text-center font-serif text-xl mb-6 text-gray-700">
-              Холбоо барих
-            </h2>
-            <div className="space-y-4 font-serif">
-              <div className="flex justify-between border-b pb-2">
-                <span className="text-gray-400">Барсбаатар</span>
-                <a
-                  href="tel:94004499"
-                  className="text-[#e7b596] font-bold"
-                  aria-label="Барсбаатарт залгах"
-                >
-                  94004499
-                </a>
-              </div>
-              <div className="flex justify-between border-b pb-2">
-                <span className="text-gray-400">Одончимэг</span>
-                <a
-                  href="tel:89399879"
-                  className="text-[#e7b596] font-bold"
-                  aria-label="Одончимэгт залгах"
-                >
-                  89399879
-                </a>
-              </div>
+            <div className="flex justify-center">
+              <img
+                className="w-32"
+                src={longsLeaf}
+                alt="leaf"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           </motion.div>
 
+          <WeddingCalendar />
+
+          <CoupleContact />
+
           <motion.div
             {...getFadeInUp(scrollRef)}
-            className="px-5 mb-10 text-center"
+            className=" mb-10 text-center"
           >
-            <h2 className="font-serif mb-4 text-gray-500">Бэлэг дурсгал</h2>
+            <p className="font-elegant font-thin flex flex-auto italic justify-center items-center mt-10 mb-5">
+              Барсбаатар♥Одончимэг
+            </p>
             <img
               src={dans}
               alt="dans"
-              className="w-full rounded-2xl shadow-md"
+              className="w-full shadow-md"
               loading="lazy"
               decoding="async"
             />
