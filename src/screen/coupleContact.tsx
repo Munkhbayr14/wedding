@@ -16,7 +16,7 @@ interface ContactCardProps {
 function ContactCard({ person }: ContactCardProps) {
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="w-full aspect-[3/4] overflow-hidden rounded-sm">
+      <div className="w-full aspect-[4/4] overflow-hidden rounded-sm">
         <img
           src={person.photo}
           alt={person.name}
@@ -26,15 +26,15 @@ function ContactCard({ person }: ContactCardProps) {
       </div>
 
       <p className="font-elegant font-thin text-[15px] text-gray-700">
-        <span className="">♥</span>{" "}
-        <span className="text-gray-400 text-[13px]">{person.role}</span>{" "}
+        <span className="text-[12px]">♥</span>{" "}
+        <span className="text-gray-500 text-[13px]">{person.role}</span>{" "}
         <span className="font-elegant font-thin">{person.name}</span>
       </p>
 
       <div className="flex gap-3">
         <a
           href={`tel:${person.phone}`}
-          className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-[#e7b596] hover:text-white transition-colors"
+          className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200  transition-colors"
           aria-label={`${person.name}-д залгах`}
         >
           <svg
@@ -54,7 +54,7 @@ function ContactCard({ person }: ContactCardProps) {
         </a>
         <a
           href={`sms:${person.phone}`}
-          className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-[#e7b596] hover:text-white transition-colors"
+          className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200  transition-colors"
           aria-label={`${person.name}-д мессеж илгээх`}
         >
           <svg

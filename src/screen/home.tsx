@@ -17,6 +17,7 @@ import longLeaf from "../other-image/longLeaf.png";
 import longsLeaf from "../other-image/lognsLeaf.png";
 import boxIcon from "../other-image/boxIcon.png";
 import weddingBanner from "../other-image/weddingBanner.png";
+import weddingDay from "../other-image/wedddingDay.png";
 import weddingPhoto from "../other-image/weddingPhoto.png";
 import SakuraFalling from "./SakuraFalling";
 import WeddingCalendar from "./weddingCalendar";
@@ -210,33 +211,103 @@ export default function Home() {
               initial={{ opacity: 1 }}
               exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
               transition={{ duration: 0.6 }}
-              className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-[#fcf5eb] px-10 text-center"
+              className="absolute inset-0 z-40 flex flex-col items-center justify-center text-center px-10"
+              style={{ background: "#e7e7e7" }}
             >
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8 }}
-                className="italic font-serif text-[#7f838c] mb-2"
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: `url(${covers})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  opacity: 0.15,
+                }}
+              />
+
+              <div className="relative z-10 flex flex-col items-center gap-2">
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 1 }}
+                  className="font-elegant font-thin tracking-widest text-[16px]"
+                  style={{ color: "#a89880", letterSpacing: "0.15em" }}
+                >
+                  — Wedding Invitation —
+                </motion.p>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.8 }}
+                  style={{
+                    width: 40,
+                    height: 1,
+                    background: "#d4b89a",
+                    margin: "6px 0",
+                  }}
+                />
+
+                {/* <motion.h1
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.8 }}
+                  className="font-serif font-normal leading-relaxed"
+                  style={{ color: "#5c4a3a", fontSize: 22 }}
+                >
+                  Барсбаатар
+                  <br />
+                  <span style={{ color: "#c9a882", fontSize: 16 }}>♥</span>
+                  <br />
+                  Одончимэг
+                </motion.h1>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5, duration: 0.8 }}
+                  style={{
+                    width: 40,
+                    height: 1,
+                    background: "#d4b89a",
+                    margin: "6px 0",
+                  }}
+                /> */}
+
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.6, duration: 0.8 }}
+                  className="font-elegant font-thin tracking-widest text-[12px]"
+                  style={{ color: "#a89880" }}
+                >
+                  2026 · 03 · 28
+                </motion.p>
+
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.8, duration: 0.5 }}
+                  onClick={startExperience}
+                  className="mt-8 font-elegant font-thin text-[18px] tracking-widest active:scale-95 transition-transform"
+                  style={{
+                    background: "transparent",
+                    // border: "0.1px solid #c9a882",
+                    color: "#8a6a50",
+                    padding: "10px 28px",
+                    borderRadius: 20,
+                    letterSpacing: "0.12em",
+                  }}
+                >
+                  Урилга нээх
+                </motion.button>
+              </div>
+
+              <p
+                className="absolute bottom-6 font-serif text-[11px] tracking-widest animate-pulse"
+                style={{ color: "#c4ae95" }}
               >
-                Wedding Invitation
-              </motion.p>
-              <motion.h1
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.8 }}
-                className="text-3xl font-serif text-gray-700 mb-8"
-              >
-                Барсбаатар & Одончимэг
-              </motion.h1>
-              <motion.button
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                onClick={startExperience}
-                className="px-10 py-3 bg-[#e7b596] text-white rounded-full font-serif shadow-lg active:scale-95 transition-transform"
-              >
-                Урилга нээх ♥
-              </motion.button>
+                morning✨
+              </p>
             </motion.div>
           )}
         </AnimatePresence>
@@ -249,6 +320,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 40 }}
             animate={showSplash ? { opacity: 0, y: 40 } : { opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 1 }}
+            className="relative w-full"
           >
             <img
               className="w-full h-auto object-cover"
@@ -257,6 +329,15 @@ export default function Home() {
               loading="eager"
               decoding="async"
             />
+
+            {/* Wedding day текст — зурагны дээр */}
+            <div className="absolute -bottom-3.5 left-0 right-0 flex justify-center">
+              <img
+                src={weddingDay}
+                alt="Wedding day"
+                className="w-80 opacity-90"
+              />
+            </div>
           </motion.div>
 
           <motion.div
@@ -439,7 +520,7 @@ export default function Home() {
           <motion.button
             whileTap={{ scale: 0.96 }}
             onClick={() => openGallery(0)}
-            className="flex flex-col justify-center items-center mt-6 mx-auto px-10 py-2 border border-[#e7b596] text-[#e7b596] font-elegant font-thin text-sm tracking-wider"
+            className="flex flex-col justify-center items-center mt-6 mx-auto px-10 py-2 border border-gray-400 text-gray-600 font-elegant font-thin text-sm tracking-wider"
           >
             Зураг харах +
           </motion.button>
