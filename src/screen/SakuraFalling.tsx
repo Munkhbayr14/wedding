@@ -29,19 +29,18 @@ function createPetal(canvasW: number, canvasH: number): Petal {
     x: Math.random() * canvasW,
     y: Math.random() * -canvasH,
     size: Math.random() * 10 + 6,
-    speedY: Math.random() * 1.2 + 0.6,
-    speedX: Math.random() * 0.6 - 0.3,
+    speedY: Math.random() * 0.4 + 0.2, // 1.2+0.6 → 0.4+0.2 (удаан)
+    speedX: Math.random() * 0.3 - 0.15, // 0.6-0.3 → 0.3-0.15 (удаан)
     rot: Math.random() * Math.PI * 2,
-    rotSpeed: (Math.random() - 0.5) * 0.04,
+    rotSpeed: (Math.random() - 0.5) * 0.02, // 0.04 → 0.02 (аажим эргэлт)
     wobble: Math.random() * Math.PI * 2,
-    wobbleSpeed: Math.random() * 0.03 + 0.01,
-    wobbleAmp: Math.random() * 1.5 + 0.5,
+    wobbleSpeed: Math.random() * 0.015 + 0.005, // 0.03+0.01 → 0.015+0.005
+    wobbleAmp: Math.random() * 0.8 + 0.3, // 1.5+0.5 → 0.8+0.3 (бага хэлбэлзэл)
     color: PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)],
     opacity: Math.random() * 0.4 + 0.5,
     tilt: Math.random() * 0.8 - 0.4,
   };
 }
-
 function drawPetal(ctx: CanvasRenderingContext2D, p: Petal) {
   ctx.save();
   ctx.translate(p.x, p.y);
@@ -50,7 +49,6 @@ function drawPetal(ctx: CanvasRenderingContext2D, p: Petal) {
 
   const s = p.size;
 
-  // Навчны хэлбэр — bezier curve-р жинхэнэ дэлбээний дүрс
   ctx.beginPath();
   ctx.moveTo(0, -s);
   ctx.bezierCurveTo(s * 0.8, -s * 0.6, s * 0.9, s * 0.2, 0, s * 0.5);
@@ -58,7 +56,6 @@ function drawPetal(ctx: CanvasRenderingContext2D, p: Petal) {
   ctx.fillStyle = p.color + p.opacity + ")";
   ctx.fill();
 
-  // Голын судал
   ctx.beginPath();
   ctx.moveTo(0, -s * 0.9);
   ctx.bezierCurveTo(s * 0.15, 0, s * 0.05, s * 0.3, 0, s * 0.45);
@@ -83,19 +80,17 @@ const SakuraFalling = () => {
     let petals: Petal[] = [];
 
     const resize = () => {
+      if (!canvas.offsetWidth || !canvas.offsetHeight) return;
       const dpr = window.devicePixelRatio || 1;
       canvas.width = canvas.offsetWidth * dpr;
       canvas.height = canvas.offsetHeight * dpr;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
       petals = Array.from({ length: 25 }, () =>
         createPetal(canvas.offsetWidth, canvas.offsetHeight),
       );
     };
 
-    resize();
-    window.addEventListener("resize", resize);
-
-    // Салхины эффект — аажмаар өөрчлөгдөнө
     let wind = 0;
     let windTarget = 0;
     let windTimer = 0;
@@ -105,7 +100,6 @@ const SakuraFalling = () => {
       const h = canvas.offsetHeight;
       ctx.clearRect(0, 0, w, h);
 
-      // ~3 секунд тутамд салхины чиглэл санамсаргүй өөрчлөгдөнө
       windTimer++;
       if (windTimer > 180) {
         windTarget = (Math.random() - 0.5) * 0.8;
@@ -132,7 +126,12 @@ const SakuraFalling = () => {
       animFrameId = requestAnimationFrame(animate);
     };
 
-    animate();
+    window.addEventListener("resize", resize);
+
+    animFrameId = requestAnimationFrame(() => {
+      resize();
+      animate();
+    });
 
     return () => {
       cancelAnimationFrame(animFrameId);
