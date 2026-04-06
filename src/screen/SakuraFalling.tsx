@@ -86,7 +86,7 @@ const SakuraFalling = () => {
       canvas.height = canvas.offsetHeight * dpr;
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
-      petals = Array.from({ length: 25 }, () =>
+      petals = Array.from({ length: 12 }, () =>
         createPetal(canvas.offsetWidth, canvas.offsetHeight),
       );
     };
