@@ -31,12 +31,32 @@ const AnimatePresence = FramerAnimatePresence as React.FC<{
 }>;
 
 const GALLERY_IMAGES = [b_2, b_4, b_1, b_7, b_8, b_9, b_2, b_4, b_1];
+const GUEST_MESSAGES_STORAGE_KEY = "wedding_guest_messages";
+
+interface GuestMessage {
+  id: number;
+  name: string;
+  message: string;
+}
 
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [guestName, setGuestName] = useState("");
+  const [guestMessage, setGuestMessage] = useState("");
+  const [guestMessages, setGuestMessages] = useState<GuestMessage[]>(() => {
+    try {
+      const storedMessages = localStorage.getItem(GUEST_MESSAGES_STORAGE_KEY);
+      if (!storedMessages) return [];
+      const parsed = JSON.parse(storedMessages) as GuestMessage[];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.warn("Failed to read guest messages from localStorage:", error);
+      return [];
+    }
+  });
   const audioRef = useRef<HTMLAudioElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -90,6 +110,34 @@ export default function Home() {
     [],
   );
 
+  const handleGuestMessageSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const name = guestName.trim();
+      const message = guestMessage.trim();
+      if (!name || !message) return;
+
+      setGuestMessages((prev) => [
+        { id: Date.now(), name, message },
+        ...prev,
+      ]);
+      setGuestName("");
+      setGuestMessage("");
+    },
+    [guestName, guestMessage],
+  );
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        GUEST_MESSAGES_STORAGE_KEY,
+        JSON.stringify(guestMessages),
+      );
+    } catch (error) {
+      console.warn("Failed to save guest messages to localStorage:", error);
+    }
+  }, [guestMessages]);
+
   useEffect(() => {
     if (!showGallery) return;
     const handler = (e: KeyboardEvent) => {
@@ -136,6 +184,7 @@ export default function Home() {
               }}
             >
               <button
+                type="button"
                 className="absolute top-5 right-5 text-white text-3xl leading-none z-10"
                 onClick={closeGallery}
                 aria-label="Хаах"
@@ -167,7 +216,11 @@ export default function Home() {
                   prevImage();
                 }}
               >
-                <button className="text-white/70 text-5xl leading-none active:scale-90 transition-transform">
+                <button
+                  type="button"
+                  aria-label="Өмнөх зураг"
+                  className="text-white/70 text-5xl leading-none active:scale-90 transition-transform"
+                >
                   ‹
                 </button>
               </div>
@@ -179,7 +232,11 @@ export default function Home() {
                   nextImage();
                 }}
               >
-                <button className="text-white/70 text-5xl leading-none active:scale-90 transition-transform">
+                <button
+                  type="button"
+                  aria-label="Дараах зураг"
+                  className="text-white/70 text-5xl leading-none active:scale-90 transition-transform"
+                >
                   ›
                 </button>
               </div>
@@ -187,6 +244,8 @@ export default function Home() {
               <div className="absolute bottom-8 flex gap-2">
                 {GALLERY_IMAGES.map((_, i) => (
                   <button
+                    type="button"
+                    aria-label={`${i + 1}-р зураг руу очих`}
                     key={i}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -284,6 +343,7 @@ export default function Home() {
                 </motion.p>
 
                 <motion.button
+                  type="button"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.8, duration: 0.5 }}
@@ -494,6 +554,7 @@ export default function Home() {
           <div className="grid grid-cols-3 gap-1 p-4">
             {GALLERY_IMAGES.map((img, index) => (
               <motion.button
+                type="button"
                 key={index}
                 onClick={() => openGallery(index)}
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -518,6 +579,7 @@ export default function Home() {
           </div>
 
           <motion.button
+            type="button"
             whileTap={{ scale: 0.96 }}
             onClick={() => openGallery(0)}
             className="flex flex-col justify-center items-center mt-6 mx-auto px-10 py-2 border border-gray-400 text-gray-600 font-elegant font-thin text-sm tracking-wider"
@@ -587,6 +649,61 @@ export default function Home() {
             />
           </motion.div>
 
+          <section className="bg-white px-5 py-10">
+            <h2 className="text-center font-elegant font-thin text-[22px] text-gray-700">
+              Сэтгэгдэл
+            </h2>
+            <p className="text-center text-[13px] text-gray-400 mt-2 mb-6">
+              Нэрээ бичээд ерөөл, сэтгэгдлээ үлдээгээрэй
+            </p>
+
+            <form
+              onSubmit={handleGuestMessageSubmit}
+              className="flex flex-col gap-3"
+            >
+              <input
+                type="text"
+                value={guestName}
+                onChange={(e) => setGuestName(e.target.value)}
+                placeholder="Таны нэр"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm outline-none focus:border-[#e7b596]"
+              />
+              <textarea
+                value={guestMessage}
+                onChange={(e) => setGuestMessage(e.target.value)}
+                placeholder="Сэтгэгдэл..."
+                rows={4}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm resize-none outline-none focus:border-[#e7b596]"
+              />
+              <button
+                type="submit"
+                className="self-end px-5 py-2 border border-[#e7b596] text-[#8a6a50] rounded-md text-sm font-elegant font-thin active:scale-95 transition-transform"
+              >
+                Илгээх
+              </button>
+            </form>
+
+            <div className="mt-6 space-y-3">
+              {guestMessages.length === 0 ? (
+                <p className="text-center text-sm text-gray-400">
+                  Одоогоор сэтгэгдэл байхгүй байна.
+                </p>
+              ) : (
+                guestMessages.map((item) => (
+                  <div
+                    key={item.id}
+                    className="border border-gray-200 rounded-md px-3 py-3"
+                  >
+                    <p className="text-[13px] text-gray-500">{item.name}</p>
+                    <p className="text-sm text-gray-700 mt-1 leading-relaxed">
+                      {item.message}
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+
           <div className="h-48 flex flex-col justify-center items-center text-gray-400 italic">
             <p>Thank you!</p>
             <p className="mt-2 text-red-200 text-xl">♥</p>
@@ -597,6 +714,7 @@ export default function Home() {
         <AnimatePresence>
           {!showSplash && (
             <motion.button
+              type="button"
               key="music-btn"
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}

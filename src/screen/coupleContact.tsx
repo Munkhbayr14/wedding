@@ -10,7 +10,6 @@ interface Person {
 
 interface ContactCardProps {
   person: Person;
-  label: string;
 }
 
 function ContactCard({ person }: ContactCardProps) {
@@ -95,8 +94,8 @@ export default function CoupleContact() {
   return (
     <div className="bg-white w-full px-4 py-8">
       <div className="grid grid-cols-2 gap-4">
-        <ContactCard person={groom} label="신랑측 혼주" />
-        <ContactCard person={bride} label="신부측 혼주" />
+        <ContactCard person={groom} />
+        <ContactCard person={bride} />
       </div>
       <hr className="mt-8 border-dashed" />
     </div>

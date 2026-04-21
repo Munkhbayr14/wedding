@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.962dbb8a.css",
-    "main.js": "/static/js/main.4077a5ae.js",
+    "main.css": "/static/css/main.972b5c01.css",
+    "main.js": "/static/js/main.91f41117.js",
     "static/js/787.38f37db2.chunk.js": "/static/js/787.38f37db2.chunk.js",
     "static/media/b-9.jpg": "/static/media/b-9.5a1278dd4fd9ae61850a.jpg",
     "static/media/Katawaredoki.mp3": "/static/media/Katawaredoki.3e960eee95375b8de161.mp3",
@@ -12,14 +12,14 @@
     "static/media/b-4.jpg": "/static/media/b-4.793d378ab0be2f50821d.jpg",
     "static/media/b-1.jpg": "/static/media/b-1.e0dcc8d5f26996e44a3c.jpg",
     "static/media/weddingBanner.png": "/static/media/weddingBanner.c365f86546509894bb53.png",
-    "static/media/dans.png": "/static/media/dans.611b8a8ba7c6c22d6608.png",
+    "static/media/thank you .png": "/static/media/thank you .3634b723903444364db2.png",
     "index.html": "/index.html",
-    "main.962dbb8a.css.map": "/static/css/main.962dbb8a.css.map",
-    "main.4077a5ae.js.map": "/static/js/main.4077a5ae.js.map",
+    "main.972b5c01.css.map": "/static/css/main.972b5c01.css.map",
+    "main.91f41117.js.map": "/static/js/main.91f41117.js.map",
     "787.38f37db2.chunk.js.map": "/static/js/787.38f37db2.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.962dbb8a.css",
-    "static/js/main.4077a5ae.js"
+    "static/css/main.972b5c01.css",
+    "static/js/main.91f41117.js"
   ]
 }
