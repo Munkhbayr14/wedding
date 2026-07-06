@@ -11,17 +11,44 @@ import b_8 from "../barsaa/b-8.jpg";
 import b_9 from "../barsaa/b-9.jpg";
 import covers from "../barsaa/covers.jpg";
 import dans from "../other-image/thank you .png";
-import musicSrc from "../music/Katawaredoki.mp3";
-import leaf from "../other-image/leaf.png";
-import longLeaf from "../other-image/longLeaf.png";
-import longsLeaf from "../other-image/lognsLeaf.png";
-import boxIcon from "../other-image/boxIcon.png";
-import weddingBanner from "../other-image/weddingBanner.png";
-import weddingDay from "../other-image/wedddingDay.png";
-import weddingPhoto from "../other-image/weddingPhoto.png";
+import musicSrc from "../music/UI.mp3";
 import SakuraFalling from "./SakuraFalling";
 import WeddingCalendar from "./weddingCalendar";
 import CoupleContact from "./coupleContact";
+
+/* ────────────────────────────────────────────────────────────
+   ЗАСВАРЛАХ УТГА (нэр, огноо, байршил) — энд өөрчилнө
+──────────────────────────────────────────────────────────── */
+const CONFIG = {
+  groom: "Барсбаатар",
+  bride: "Одончимэг",
+  dateLabel: "2026 · 09 · 12",
+  dayLabel: "Saturday · 10:30",
+  venueTitle: "Улаанбаатар Зүүн чуулган",
+  venueSub: "3 давхар, Их танхим",
+};
+
+const PALETTE = {
+  paper: "#FBF7F2",
+  greige: "#F1E9E0",
+  blush: "#E7CFC7",
+  rose: "#C08A7D",
+  roseDeep: "#A9705F",
+  mauve: "#6E5A52",
+  ink: "#514842",
+  muted: "#9A8B81",
+  sage: "#9AA487",
+  line: "#E4D8CD",
+};
+
+/* Хуучин font-elegant-ийг эх контейнерээс өвлүүлнэ */
+const FONT = {
+  display: "inherit",
+  accent: "inherit",
+  body: "inherit",
+};
+
+const GALLERY_IMAGES = [b_2, b_4, b_1, b_7, b_8, b_9, b_2, b_4, b_1];
 
 const AnimatePresence = FramerAnimatePresence as React.FC<{
   children?: React.ReactNode;
@@ -30,52 +57,158 @@ const AnimatePresence = FramerAnimatePresence as React.FC<{
   onExitComplete?: () => void;
 }>;
 
-const GALLERY_IMAGES = [b_2, b_4, b_1, b_7, b_8, b_9, b_2, b_4, b_1];
-const GUEST_MESSAGES_STORAGE_KEY = "wedding_guest_messages";
+/* Scroll хийхэд зөөлөн гарч ирэх reveal */
+const Reveal: React.FC<{
+  children: React.ReactNode;
+  root: React.RefObject<HTMLDivElement>;
+  className?: string;
+  delay?: number;
+  y?: number;
+}> = ({ children, root, className, delay = 0, y = 28 }) => (
+  <motion.div
+    className={className}
+    initial={{ opacity: 0, y }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-40px", root }}
+    transition={{ duration: 1, ease: [0.2, 0.7, 0.2, 1], delay }}
+  >
+    {children}
+  </motion.div>
+);
 
-interface GuestMessage {
-  id: number;
-  name: string;
-  message: string;
-}
+/* Ботаник тусгаарлагч зураас */
+const Divider: React.FC<{ small?: boolean }> = ({ small }) => (
+  <div
+    className="flex items-center justify-center gap-3.5 mx-auto"
+    style={{ padding: small ? "30px 0" : "46px 0" }}
+  >
+    <span
+      style={{
+        width: 52,
+        height: 1,
+        background: `linear-gradient(90deg,transparent,${PALETTE.line},transparent)`,
+      }}
+    />
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={PALETTE.sage}
+      strokeWidth="1.1"
+      style={{ opacity: 0.9 }}
+    >
+      <path
+        d="M12 21c0-6 3-9 8-10-5-1-8-4-8-9 0 5-3 8-8 9 5 1 8 4 8 10z"
+        strokeLinejoin="round"
+      />
+    </svg>
+    <span
+      style={{
+        width: 52,
+        height: 1,
+        background: `linear-gradient(90deg,transparent,${PALETTE.line},transparent)`,
+      }}
+    />
+  </div>
+);
+
+const Eyebrow: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <p
+    className="text-center"
+    style={{
+      fontFamily: FONT.accent,
+      letterSpacing: "0.4em",
+      textTransform: "uppercase",
+      fontSize: 12,
+      color: PALETTE.rose,
+      fontWeight: 500,
+    }}
+  >
+    {children}
+  </p>
+);
+
+const SectionTitle: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => (
+  <p
+    className="text-center"
+    style={{
+      fontFamily: FONT.display,
+      color: PALETTE.mauve,
+      fontWeight: 500,
+      fontSize: 25,
+      marginTop: 12,
+    }}
+  >
+    {children}
+  </p>
+);
 
 export default function Home() {
-  const [showSplash, setShowSplash] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [guestName, setGuestName] = useState("");
-  const [guestMessage, setGuestMessage] = useState("");
-  const [guestMessages, setGuestMessages] = useState<GuestMessage[]>(() => {
-    try {
-      const storedMessages = localStorage.getItem(GUEST_MESSAGES_STORAGE_KEY);
-      if (!storedMessages) return [];
-      const parsed = JSON.parse(storedMessages) as GuestMessage[];
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-      console.warn("Failed to read guest messages from localStorage:", error);
-      return [];
-    }
-  });
+  const [giftOpen, setGiftOpen] = useState(false);
+
   const audioRef = useRef<HTMLAudioElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-
   const touchStartX = useRef<number>(0);
 
-  const getFadeInUp = (ref: React.RefObject<HTMLDivElement>) => ({
-    initial: { opacity: 0, y: 30 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, margin: "-50px", root: ref },
-    transition: { duration: 0.8, ease: "easeOut" },
-  });
+  /* Хөгжим: эхлээд дуутай autoplay оролдоно. Хориглогдвол ДУУГҮЙ autoplay
+     (бүх браузер зөвшөөрдөг) хийгээд, хэрэглэгчийн анхны хүрэлт/дарлага дээр
+     дууг нь асаана. */
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
 
-  const startExperience = useCallback(() => {
-    setShowSplash(false);
-    setIsPlaying(true);
-    audioRef.current?.play().catch((err) => {
-      console.warn("Audio autoplay blocked:", err);
-      setIsPlaying(false);
-    });
+    let unlocked = false;
+    const events = ["pointerdown", "touchstart", "click", "keydown"] as const;
+
+    const cleanup = () => {
+      events.forEach((e) => {
+        window.removeEventListener(e, unlock);
+        document.removeEventListener(e, unlock);
+      });
+    };
+
+    function unlock() {
+      if (unlocked) return;
+      const a = audioRef.current;
+      if (!a) return;
+      a.muted = false;
+      a.volume = 1;
+      a.play()
+        .then(() => {
+          unlocked = true;
+          setIsPlaying(true);
+          cleanup();
+        })
+        .catch(() => {
+          /* дараагийн хүрэлт дээр дахин оролдоно */
+        });
+    }
+
+    /* 1) Дуутай autoplay оролдох */
+    audio.muted = false;
+    audio
+      .play()
+      .then(() => {
+        unlocked = true;
+        setIsPlaying(true);
+      })
+      .catch(() => {
+        /* 2) Хориглогдвол дуугүйгээр урьдчилан эхлүүлж unlock хүлээнэ */
+        audio.muted = true;
+        audio.play().catch(() => {});
+        events.forEach((e) => {
+          window.addEventListener(e, unlock, { passive: true });
+          document.addEventListener(e, unlock, { passive: true });
+        });
+      });
+
+    return cleanup;
   }, []);
 
   const toggleMusic = useCallback(() => {
@@ -85,18 +218,20 @@ export default function Home() {
       audio.pause();
       setIsPlaying(false);
     } else {
-      audio.play().catch((err) => console.warn("Audio play blocked:", err));
-      setIsPlaying(true);
+      audio.muted = false;
+      audio.volume = 1;
+      audio
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch(() => {});
     }
   }, [isPlaying]);
 
-  const openGallery = useCallback((index: number) => {
-    setActiveIndex(index);
+  const openGallery = useCallback((i: number) => {
+    setActiveIndex(i);
     setShowGallery(true);
   }, []);
-
   const closeGallery = useCallback(() => setShowGallery(false), []);
-
   const prevImage = useCallback(
     () =>
       setActiveIndex(
@@ -104,49 +239,20 @@ export default function Home() {
       ),
     [],
   );
-
   const nextImage = useCallback(
     () => setActiveIndex((i) => (i + 1) % GALLERY_IMAGES.length),
     [],
   );
 
-  const handleGuestMessageSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      const name = guestName.trim();
-      const message = guestMessage.trim();
-      if (!name || !message) return;
-
-      setGuestMessages((prev) => [
-        { id: Date.now(), name, message },
-        ...prev,
-      ]);
-      setGuestName("");
-      setGuestMessage("");
-    },
-    [guestName, guestMessage],
-  );
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(
-        GUEST_MESSAGES_STORAGE_KEY,
-        JSON.stringify(guestMessages),
-      );
-    } catch (error) {
-      console.warn("Failed to save guest messages to localStorage:", error);
-    }
-  }, [guestMessages]);
-
   useEffect(() => {
     if (!showGallery) return;
-    const handler = (e: KeyboardEvent) => {
+    const h = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") prevImage();
       if (e.key === "ArrowRight") nextImage();
       if (e.key === "Escape") closeGallery();
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
   }, [showGallery, prevImage, nextImage, closeGallery]);
 
   useEffect(() => {
@@ -157,13 +263,18 @@ export default function Home() {
   }, [showGallery]);
 
   return (
-    <div className="h-screen w-full bg-gray-200 flex justify-center items-center overflow-hidden">
-      <div className="relative w-full max-w-[450px] h-full md:h-[92vh] bg-white md:rounded-[2.5rem] md:shadow-2xl overflow-hidden border-x border-gray-100 flex flex-col">
-        {!showSplash && <SakuraFalling />}
+    <div
+      className="h-screen w-full flex justify-center items-center overflow-hidden font-elegant font-thin"
+      style={{ background: "#E9DED3" }}
+    >
+      <div
+        className="relative w-full max-w-[440px] h-full md:h-[94vh] overflow-hidden flex flex-col md:rounded-[34px] md:shadow-2xl"
+        style={{ background: PALETTE.paper }}
+      >
+        <SakuraFalling />
+        <audio ref={audioRef} src={musicSrc} loop preload="auto" />
 
-        <audio ref={audioRef} src={musicSrc} loop preload="none" />
-
-        {/* ── Modal Lightbox ── */}
+        {/* ── Lightbox ── */}
         <AnimatePresence>
           {showGallery && (
             <motion.div
@@ -172,7 +283,8 @@ export default function Home() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="absolute inset-0 z-50 bg-black/90 flex flex-col items-center justify-center"
+              className="absolute inset-0 z-50 flex flex-col items-center justify-center"
+              style={{ background: "rgba(30,22,20,0.94)" }}
               onClick={closeGallery}
               onTouchStart={(e) => {
                 touchStartX.current = e.touches[0].clientX;
@@ -191,554 +303,656 @@ export default function Home() {
               >
                 ×
               </button>
-
-              <p className="absolute top-6 left-0 right-0 text-center text-white/50 text-sm">
+              <p className="absolute top-6 left-0 right-0 text-center text-white/50 text-sm tracking-widest">
                 {activeIndex + 1} / {GALLERY_IMAGES.length}
               </p>
-
               <motion.img
                 key={activeIndex}
                 src={GALLERY_IMAGES[activeIndex]}
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className="max-h-[75vh] max-w-[90%] rounded-xl object-contain shadow-2xl"
+                transition={{ duration: 0.25 }}
+                className="max-h-[76vh] max-w-[92%] rounded-xl object-contain shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
-                alt={"Wedding ceremony"}
+                alt="Дурсамж"
                 loading="eager"
               />
-
-              <div
-                className="absolute inset-y-0 left-0 w-1/4 flex items-center justify-start pl-3"
+              <button
+                type="button"
+                aria-label="Өмнөх"
                 onClick={(e) => {
                   e.stopPropagation();
                   prevImage();
                 }}
+                className="absolute inset-y-0 left-0 w-1/4 flex items-center pl-3 text-white/60 text-5xl"
               >
-                <button
-                  type="button"
-                  aria-label="Өмнөх зураг"
-                  className="text-white/70 text-5xl leading-none active:scale-90 transition-transform"
-                >
-                  ‹
-                </button>
-              </div>
-
-              <div
-                className="absolute inset-y-0 right-0 w-1/4 flex items-center justify-end pr-3"
+                ‹
+              </button>
+              <button
+                type="button"
+                aria-label="Дараах"
                 onClick={(e) => {
                   e.stopPropagation();
                   nextImage();
                 }}
+                className="absolute inset-y-0 right-0 w-1/4 flex items-center justify-end pr-3 text-white/60 text-5xl"
               >
-                <button
-                  type="button"
-                  aria-label="Дараах зураг"
-                  className="text-white/70 text-5xl leading-none active:scale-90 transition-transform"
-                >
-                  ›
-                </button>
-              </div>
-
-              <div className="absolute bottom-8 flex gap-2">
-                {GALLERY_IMAGES.map((_, i) => (
-                  <button
-                    type="button"
-                    aria-label={`${i + 1}-р зураг руу очих`}
-                    key={i}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setActiveIndex(i);
-                    }}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      i === activeIndex
-                        ? "bg-[#e7b596] scale-125"
-                        : "bg-white/40"
-                    }`}
-                  />
-                ))}
-              </div>
+                ›
+              </button>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <AnimatePresence>
-          {showSplash && (
-            <motion.div
-              key="splash"
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
-              transition={{ duration: 0.6 }}
-              className="absolute inset-0 z-40 flex flex-col items-center justify-center text-center px-10"
-              style={{ background: "#e7e7e7" }}
-            >
-              <div
-                className="absolute inset-0"
+        {/* ── Scroll хэсэг ── */}
+        <div
+          ref={scrollRef}
+          className="flex-1 overflow-y-auto no-scrollbar scroll-smooth"
+        >
+          {/* COVER */}
+          <div className="relative w-full h-[100svh] min-h-[600px] max-h-[880px] overflow-hidden">
+            <motion.img
+              src={covers}
+              alt="Хуримын зураг"
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ filter: "saturate(0.82) brightness(0.96)" }}
+              initial={{ scale: 1.08, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 1.6, ease: "easeOut" }}
+              loading="eager"
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(70,52,45,.28) 0%, rgba(70,52,45,0) 26%, rgba(70,52,45,0) 52%, rgba(251,247,242,.30) 82%, rgba(251,247,242,.97) 100%)",
+              }}
+            />
+            <div className="absolute inset-0 z-[7] flex flex-col items-center justify-between text-center px-6 pt-16 pb-12">
+              <motion.p
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 1 }}
                 style={{
-                  backgroundImage: `url(${covers})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  opacity: 0.15,
+                  fontFamily: FONT.accent,
+                  letterSpacing: "0.42em",
+                  textTransform: "uppercase",
+                  fontSize: 12.5,
+                  color: "#F6EEE7",
+                  textShadow: "0 1px 12px rgba(60,40,35,.45)",
                 }}
-              />
+              >
+                The Wedding of
+              </motion.p>
 
-              <div className="relative z-10 flex flex-col items-center gap-2">
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 1 }}
-                  className="font-elegant font-thin tracking-widest text-[16px]"
-                  style={{ color: "#a89880", letterSpacing: "0.15em" }}
-                >
-                  — Wedding Invitation —
-                </motion.p>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2, duration: 0.8 }}
-                  style={{
-                    width: 40,
-                    height: 1,
-                    background: "#d4b89a",
-                    margin: "6px 0",
-                  }}
-                />
-
-                {/* <motion.h1
-                  initial={{ opacity: 0, y: 10 }}
+              <div className="flex flex-col items-center">
+                <motion.h1
+                  initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.8 }}
-                  className="font-serif font-normal leading-relaxed"
-                  style={{ color: "#5c4a3a", fontSize: 22 }}
+                  transition={{ delay: 0.55, duration: 1.1 }}
+                  style={{
+                    fontFamily: FONT.display,
+                    color: "#FCF7F2",
+                    lineHeight: 1.06,
+                    fontSize: 46,
+                    fontStyle: "italic",
+                    textShadow: "0 2px 24px rgba(55,35,30,.5)",
+                  }}
                 >
-                  Барсбаатар
-                  <br />
-                  <span style={{ color: "#c9a882", fontSize: 16 }}>♥</span>
-                  <br />
-                  Одончимэг
+                  {CONFIG.groom}
+                  <span
+                    style={{
+                      fontFamily: FONT.accent,
+                      fontStyle: "italic",
+                      fontSize: 34,
+                      color: PALETTE.blush,
+                      display: "block",
+                      margin: "2px 0",
+                    }}
+                  >
+                    &amp;
+                  </span>
+                  {CONFIG.bride}
                 </motion.h1>
 
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5, duration: 0.8 }}
-                  style={{
-                    width: 40,
-                    height: 1,
-                    background: "#d4b89a",
-                    margin: "6px 0",
-                  }}
-                /> */}
-
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.6, duration: 0.8 }}
-                  className="font-elegant font-thin tracking-widest text-[12px]"
-                  style={{ color: "#a89880" }}
+                  transition={{ delay: 1, duration: 1 }}
+                  className="mt-4"
                 >
-                  2026 · 03 · 28
-                </motion.p>
+                  <p
+                    style={{
+                      fontFamily: FONT.accent,
+                      letterSpacing: "0.34em",
+                      fontSize: 16,
+                      color: "#F7EFE8",
+                      textShadow: "0 1px 14px rgba(60,40,35,.5)",
+                    }}
+                  >
+                    {CONFIG.dateLabel}
+                  </p>
+                  <p
+                    className="mt-1.5"
+                    style={{
+                      fontWeight: 300,
+                      letterSpacing: "0.28em",
+                      fontSize: 11,
+                      textTransform: "uppercase",
+                      color: "#F7EFE8",
+                      textShadow: "0 1px 14px rgba(60,40,35,.5)",
+                    }}
+                  >
+                    {CONFIG.dayLabel}
+                  </p>
+                </motion.div>
+              </div>
 
-                <motion.button
-                  type="button"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.8, duration: 0.5 }}
-                  onClick={startExperience}
-                  className="mt-8 font-elegant font-thin text-[18px] tracking-widest active:scale-95 transition-transform"
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.4, duration: 1 }}
+                className="flex flex-col items-center gap-2"
+                style={{ color: "#F3E9E1" }}
+              >
+                <span
                   style={{
-                    background: "transparent",
-                    // border: "0.1px solid #c9a882",
-                    color: "#8a6a50",
-                    padding: "10px 28px",
-                    borderRadius: 20,
+                    fontFamily: FONT.accent,
+                    fontStyle: "italic",
+                    fontSize: 13,
                     letterSpacing: "0.12em",
                   }}
                 >
-                  Урилга нээх
-                </motion.button>
-              </div>
-
-              <p
-                className="absolute bottom-6 font-serif text-[11px] tracking-widest animate-pulse"
-                style={{ color: "#c4ae95" }}
-              >
-                morning✨
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <div
-          ref={scrollRef}
-          className="flex-1 overflow-y-auto no-scrollbar scroll-smooth"
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={showSplash ? { opacity: 0, y: 40 } : { opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="relative w-full"
-          >
-            <img
-              className="w-full h-auto object-cover"
-              src={covers}
-              alt="Wedding ceremony"
-              loading="eager"
-              decoding="async"
-            />
-
-            {/* Wedding day текст — зурагны дээр */}
-            <div className="absolute -bottom-3.5 left-0 right-0 flex justify-center">
-              <img
-                src={weddingDay}
-                alt="Wedding day"
-                className="w-80 opacity-90"
-              />
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={showSplash ? { opacity: 0, y: 40 } : { opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="px-5 pt-16 text-center font-elegant font-thin"
-          >
-            <p className="italic text-[15px]">2026оны 03сарын 28өдөр 11:30</p>
-            <div className="py-10 flex items-end justify-center">
-              <div>
-                <p className="flex text-[15px] justify-end text-gray-400">
-                  Сүйт залуу
-                </p>
-                <h1 className="text-3xl text-gray-600"> Барсбаатарs </h1>
-              </div>
-              <span className="text-2xl text-[#f1a993] mx-1">♥</span>
-              <div>
-                <p className="flex text-[15px] justify-start text-gray-400">
-                  Сүйт бүсгүй
-                </p>
-                <h1 className="text-3xl text-gray-600">Одончимэгs</h1>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={showSplash ? { opacity: 0, y: 40 } : { opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="text-center text-gray-600 bg-white"
-          >
-            <div className="flex justify-center">
-              <img
-                className="w-12"
-                src={leaf}
-                alt="leaf"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={showSplash ? { opacity: 0, y: 40 } : { opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="mt-10 text-gray-600 bg-white"
-          >
-            <img
-              className="w-full h-auto"
-              src={weddingBanner}
-              alt="wedding banner"
-              loading="lazy"
-              decoding="async"
-            />
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={showSplash ? { opacity: 0, y: 40 } : { opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="mt-14 font-serif text-gray-600 bg-white"
-          >
-            <div className="flex justify-center">
-              <img
-                className="w-6"
-                src={boxIcon}
-                alt="box icon"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={showSplash ? { opacity: 0, y: 40 } : { opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="mt-10 font-elegant font-thin text-gray-600 bg-white px-6"
-          >
-            <p className="text-center leading-relaxed">
-              Итгэлээр түшиглэн, хайраар холбогдсон бид хоёрын
-              <br /> амьдралын хамгийн нандин энэ мөчид <br /> эрхэм таныг
-              хүндэтгэлтэйгээр урьж байна.
-              <br /> Бид бие биеэ энэрэн хайрлаж, талархан нандигнаж,
-              <br /> аз жаргалаар дүүрэн амьдралыг хамтдаа бүтээнэ.
-              <br /> Таны үнэт оролцоо, халуун ерөөл бидний ирээдүйг гэрэлтүүлэн
-              <br /> адислах тул энэ баярт мөчийг бидэнтэй хамт хуваалцана
-              <br /> гэдэгт чин сэтгэлээсээ баярлах болно.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={showSplash ? { opacity: 0, y: 40 } : { opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="my-14 font-serif text-gray-600 bg-white"
-          >
-            <div className="flex justify-center">
-              <img
-                className="w-14"
-                src={longLeaf}
-                alt="leaf"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={showSplash ? { opacity: 0, y: 40 } : { opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 1 }}
-          >
-            <img
-              className="w-full h-auto object-cover"
-              src={covers}
-              alt="covers bro"
-              loading="lazy"
-              decoding="async"
-            />
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={showSplash ? { opacity: 0, y: 40 } : { opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="text-center p-12 font-elegant font-thin text-gray-600 bg-white"
-          >
-            <p className="text-xl text-[#f1c3b4] mb-4">♥</p>
-            <p>2025 оны 11-р сарын 01</p>
-            <p>Улаанбаатар зүүн чуулган</p>
-            <p>10:00 цагт</p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={showSplash ? { opacity: 0, y: 40 } : { opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="my-8 font-serif text-gray-600 bg-white"
-          >
-            <div className="flex justify-center">
-              <img
-                className="w-24"
-                src={weddingPhoto}
-                loading="lazy"
-                alt="Wedding ceremony"
-                decoding="async"
-              />
-            </div>
-          </motion.div>
-
-          <div className="grid grid-cols-3 gap-1 p-4">
-            {GALLERY_IMAGES.map((img, index) => (
-              <motion.button
-                type="button"
-                key={index}
-                onClick={() => openGallery(index)}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, root: scrollRef }}
-                transition={{
-                  delay: Math.min(index * 0.05, 0.3),
-                  duration: 0.4,
-                }}
-                className="relative aspect-square overflow-hidden active:scale-95 transition-transform"
-              >
-                {/* 9. Gallery зурагнуудад lazy — scroll хүрэхэд л татна */}
-                <img
-                  src={img}
-                  alt={"Wedding ceremony"}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                  decoding="async"
+                  урьж байна
+                </span>
+                <span
+                  className="block"
+                  style={{
+                    width: 16,
+                    height: 16,
+                    borderRight: "1.4px solid #F3E9E1",
+                    borderBottom: "1.4px solid #F3E9E1",
+                    transform: "rotate(45deg)",
+                    animation: "wedbob 2.4s ease-in-out infinite",
+                  }}
                 />
-              </motion.button>
-            ))}
+              </motion.div>
+            </div>
           </div>
 
-          <motion.button
-            type="button"
-            whileTap={{ scale: 0.96 }}
-            onClick={() => openGallery(0)}
-            className="flex flex-col justify-center items-center mt-6 mx-auto px-10 py-2 border border-gray-400 text-gray-600 font-elegant font-thin text-sm tracking-wider"
-          >
-            Зураг харах +
-          </motion.button>
-
-          <div className="bg-white pt-3 h-auto w-full">
-            <h1 className="flex font-elegant font-thin justify-center pt-10 text-[20px] mb-10">
-              LOCATION
-            </h1>
-            <div className="w-full px-5 pb-5">
-              <iframe
-                title="Улаанбаатар зүүн чуулганы байршил"
-                className="w-full rounded-2xl shadow-sm"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10695.247020883977!2d106.95975198065267!3d47.920679739523756!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5d96911c8ad90ded%3A0x154015dc33d0e30a!2z0KPQu9Cw0LDQvdCx0LDQsNGC0LDRgCDQsdCw0L_RgtC40YHRgiDQt9Kv0q_QvSDRh9GD0YPQu9Cz0LDQvQ!5e0!3m2!1sen!2smn!4v1698212444861!5m2!1sen!2smn"
-                height="300"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
-            </div>
-            <p className=" font-elegant font-thin text-center text-[18px] mt-7">
-              {" "}
-              Улаанбаатар Зүүн чуулган{" "}
-            </p>
-            <p className=" font-elegant font-thin text-center  mb-12">
-              3 давхар Их танхим
-            </p>
-          </div>
-
-          <hr className="border-gray-200" />
-
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={showSplash ? { opacity: 0, y: 40 } : { opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="text-center text-gray-600 bg-white mt-16"
-          >
-            <div className="flex justify-center">
-              <img
-                className="w-32"
-                src={longsLeaf}
-                alt="leaf"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          </motion.div>
-
-          <WeddingCalendar />
-
-          <CoupleContact />
-
-          <motion.div
-            {...getFadeInUp(scrollRef)}
-            className=" mb-10 text-center"
-          >
-            <p className="font-elegant font-thin flex flex-auto italic justify-center items-center mt-10 mb-5">
-              Барсбаатар♥Одончимэг
-            </p>
-            <img
-              src={dans}
-              alt="dans"
-              className="w-full shadow-md"
-              loading="lazy"
-              decoding="async"
-            />
-          </motion.div>
-
-          <section className="bg-white px-5 py-10">
-            <h2 className="text-center font-elegant font-thin text-[22px] text-gray-700">
-              Сэтгэгдэл
-            </h2>
-            <p className="text-center text-[13px] text-gray-400 mt-2 mb-6">
-              Нэрээ бичээд ерөөл, сэтгэгдлээ үлдээгээрэй
-            </p>
-
-            <form
-              onSubmit={handleGuestMessageSubmit}
-              className="flex flex-col gap-3"
-            >
-              <input
-                type="text"
-                value={guestName}
-                onChange={(e) => setGuestName(e.target.value)}
-                placeholder="Таны нэр"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm outline-none focus:border-[#e7b596]"
-              />
-              <textarea
-                value={guestMessage}
-                onChange={(e) => setGuestMessage(e.target.value)}
-                placeholder="Сэтгэгдэл..."
-                rows={4}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm resize-none outline-none focus:border-[#e7b596]"
-              />
-              <button
-                type="submit"
-                className="self-end px-5 py-2 border border-[#e7b596] text-[#8a6a50] rounded-md text-sm font-elegant font-thin active:scale-95 transition-transform"
-              >
-                Илгээх
-              </button>
-            </form>
-
-            <div className="mt-6 space-y-3">
-              {guestMessages.length === 0 ? (
-                <p className="text-center text-sm text-gray-400">
-                  Одоогоор сэтгэгдэл байхгүй байна.
+          {/* GREETING */}
+          <section style={{ background: PALETTE.paper }}>
+            <Reveal root={scrollRef}>
+              <Divider />
+            </Reveal>
+            <div className="px-8">
+              <Reveal root={scrollRef}>
+                <Eyebrow>Greeting</Eyebrow>
+              </Reveal>
+              <Reveal root={scrollRef} delay={0.08}>
+                <p
+                  className="text-center mt-4"
+                  style={{
+                    fontFamily: FONT.accent,
+                    fontStyle: "italic",
+                    fontSize: 19,
+                    color: PALETTE.roseDeep,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  Хоёр зүрх нэгдэн,
+                  <br />
+                  нэг гэр бүл болох энэ өдөр
                 </p>
-              ) : (
-                guestMessages.map((item) => (
-                  <div
-                    key={item.id}
-                    className="border border-gray-200 rounded-md px-3 py-3"
+              </Reveal>
+            </div>
+            <div className="px-8 mt-6">
+              <Reveal root={scrollRef} delay={0.12}>
+                <p
+                  className="text-center"
+                  style={{
+                    fontWeight: 300,
+                    fontSize: 14.5,
+                    lineHeight: 2.05,
+                    color: PALETTE.ink,
+                  }}
+                >
+                  Итгэлээр түшиглэн, хайраар холбогдсон бид хоёрын амьдралын
+                  хамгийн нандин энэ мөчид эрхэм таныг хүндэтгэлтэйгээр урьж
+                  байна. Бие биеэ энэрэн хайрлаж, аз жаргалаар дүүрэн амьдралыг
+                  хамтдаа бүтээх бидний ирээдүйг таны халуун ерөөл гэрэлтүүлэх
+                  болно.
+                </p>
+              </Reveal>
+            </div>
+
+            <Reveal root={scrollRef}>
+              <Divider small />
+            </Reveal>
+
+            {/* Roles */}
+            <div className="px-8 flex flex-col gap-6 pb-2">
+              <Reveal root={scrollRef}>
+                <div className="flex flex-col items-center gap-1 text-center">
+                  <span
+                    style={{
+                      fontWeight: 300,
+                      fontSize: 12,
+                      color: PALETTE.muted,
+                    }}
                   >
-                    <p className="text-[13px] text-gray-500">{item.name}</p>
-                    <p className="text-sm text-gray-700 mt-1 leading-relaxed">
-                      {item.message}
-                    </p>
-                  </div>
-                ))
-              )}
+                    Цэрэн · Дулмаа нарын хүү
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: FONT.accent,
+                      fontStyle: "italic",
+                      fontSize: 14,
+                      color: PALETTE.rose,
+                    }}
+                  >
+                    Сүйт залуу
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: FONT.display,
+                      fontSize: 23,
+                      color: PALETTE.mauve,
+                      fontStyle: "italic",
+                    }}
+                  >
+                    {CONFIG.groom}
+                  </span>
+                </div>
+              </Reveal>
+              <Reveal root={scrollRef}>
+                <p
+                  className="text-center"
+                  style={{ color: PALETTE.blush, fontSize: 15 }}
+                >
+                  ♥
+                </p>
+              </Reveal>
+              <Reveal root={scrollRef}>
+                <div className="flex flex-col items-center gap-1 text-center">
+                  <span
+                    style={{
+                      fontWeight: 300,
+                      fontSize: 12,
+                      color: PALETTE.muted,
+                    }}
+                  >
+                    Батбаяр · Оюун нарын охин
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: FONT.accent,
+                      fontStyle: "italic",
+                      fontSize: 14,
+                      color: PALETTE.rose,
+                    }}
+                  >
+                    Сүйт бүсгүй
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: FONT.display,
+                      fontSize: 23,
+                      color: PALETTE.mauve,
+
+                      fontStyle: "italic",
+                    }}
+                  >
+                    {CONFIG.bride}
+                  </span>
+                </div>
+              </Reveal>
             </div>
           </section>
 
-          <div className="h-48 flex flex-col justify-center items-center text-gray-400 italic">
-            <p>Thank you!</p>
-            <p className="mt-2 text-red-200 text-xl">♥</p>
-          </div>
+          {/* GALLERY */}
+          <section
+            style={{
+              background: PALETTE.paper,
+              paddingTop: 20,
+              fontStyle: "italic",
+            }}
+          >
+            <Reveal root={scrollRef}>
+              <Divider small />
+            </Reveal>
+            <Reveal root={scrollRef}>
+              <Eyebrow>Our Moments</Eyebrow>
+            </Reveal>
+
+            <div className="grid grid-cols-3 gap-1 px-4 mt-6">
+              {GALLERY_IMAGES.map((img, index) => (
+                <motion.button
+                  type="button"
+                  key={index}
+                  onClick={() => openGallery(index)}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true, root: scrollRef }}
+                  transition={{
+                    delay: Math.min(index * 0.05, 0.3),
+                    duration: 0.4,
+                  }}
+                  className="relative aspect-square overflow-hidden active:scale-95 transition-transform"
+                >
+                  <img
+                    src={img}
+                    alt="Дурсамж"
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </motion.button>
+              ))}
+            </div>
+
+            <div className="flex justify-center mt-5">
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.97 }}
+                onClick={() => openGallery(0)}
+                style={{
+                  fontFamily: FONT.accent,
+                  fontStyle: "italic",
+                  fontSize: 15,
+                  letterSpacing: "0.06em",
+                  color: PALETTE.roseDeep,
+                  border: `1px solid ${PALETTE.line}`,
+                  borderRadius: 999,
+                  padding: "9px 26px",
+                }}
+              >
+                Бүх зургийг үзэх ✦
+              </motion.button>
+            </div>
+            <Divider small />
+          </section>
+
+          {/* CALENDAR + COUNTDOWN */}
+          <WeddingCalendar />
+
+          {/* LOCATION */}
+          <section style={{ background: PALETTE.paper, padding: "52px 0" }}>
+            <Reveal root={scrollRef}>
+              <Eyebrow>Location</Eyebrow>
+            </Reveal>
+
+            <div
+              className="mx-6 mt-6 overflow-hidden rounded-2xl"
+              style={{
+                border: `1px solid ${PALETTE.line}`,
+                boxShadow: "0 18px 40px -28px rgba(110,90,80,.6)",
+              }}
+            >
+              <iframe
+                title="Байршил"
+                className="w-full block"
+                style={{ height: 250, border: 0, filter: "saturate(0.9)" }}
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10695.247020883977!2d106.95975198065267!3d47.920679739523756!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5d96911c8ad90ded%3A0x154015dc33d0e30a!2z0KPQu9Cw0LDQvdCx0LDQsNGC0LDRgCDQsdCw0L_RgtC40YHRgiDQt9Kv0q_QvSDRh9GD0YPQu9Cz0LDQvQ!5e0!3m2!1sen!2smn!4v1698212444861!5m2!1sen!2smn"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+            <Reveal root={scrollRef}>
+              <div className="text-center mt-6">
+                <h4
+                  style={{
+                    fontFamily: FONT.display,
+                    fontSize: 20,
+                    color: PALETTE.mauve,
+                  }}
+                >
+                  {CONFIG.venueTitle}
+                </h4>
+                <p
+                  className="mt-1.5"
+                  style={{
+                    fontWeight: 300,
+                    fontSize: 13,
+                    color: PALETTE.muted,
+                  }}
+                >
+                  {CONFIG.venueSub}
+                </p>
+                <a
+                  href="https://maps.app.goo.gl/qqNbTqaeKwDg13iS8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block mt-4"
+                  style={{
+                    fontFamily: FONT.accent,
+                    fontStyle: "italic",
+                    fontSize: 14,
+                    color: PALETTE.roseDeep,
+                    borderBottom: `1px solid ${PALETTE.blush}`,
+                    paddingBottom: 2,
+                    textDecoration: "none",
+                  }}
+                >
+                  Газрын зураг дээр нээх →
+                </a>
+              </div>
+            </Reveal>
+          </section>
+
+          {/* CONTACT */}
+          <CoupleContact />
+
+          {/* GIFT */}
+          <section
+            style={{ background: PALETTE.paper, padding: "40px 0 10px" }}
+          >
+            <Reveal root={scrollRef}>
+              <Eyebrow>With Heart</Eyebrow>
+            </Reveal>
+
+            <div className="mx-6 mt-5">
+              <button
+                type="button"
+                onClick={() => setGiftOpen((v) => !v)}
+                className="w-full transition-transform active:scale-[0.99]"
+                style={{
+                  background: PALETTE.greige,
+                  border: `1px solid ${PALETTE.line}`,
+                  borderRadius: 14,
+                  padding: 16,
+                  fontFamily: FONT.accent,
+                  fontStyle: "italic",
+                  fontSize: 16,
+                  color: PALETTE.roseDeep,
+                }}
+              >
+                Дансны мэдээлэл харах
+              </button>
+              <div
+                style={{
+                  maxHeight: giftOpen ? 340 : 0,
+                  overflow: "hidden",
+                  transition: "max-height .55s ease",
+                }}
+              >
+                {[
+                  {
+                    who: "Сүйт залуу · " + CONFIG.groom,
+                    no: "5xxx xxxx",
+                    bank: "Хаан банк",
+                  },
+                  {
+                    who: "Сүйт бүсгүй · " + CONFIG.bride,
+                    no: "4xxx xxxx",
+                    bank: "Голомт банк",
+                  },
+                ].map((a, i) => (
+                  <div
+                    key={i}
+                    className="mt-3 bg-white"
+                    style={{
+                      border: `1px solid ${PALETTE.line}`,
+                      borderRadius: 12,
+                      padding: "18px",
+                    }}
+                  >
+                    <p
+                      style={{
+                        fontSize: 12,
+                        color: PALETTE.muted,
+                        letterSpacing: "0.06em",
+                      }}
+                    >
+                      {a.who}
+                    </p>
+                    <div className="flex items-center justify-between mt-2 gap-3">
+                      <div>
+                        <p
+                          style={{
+                            fontFamily: FONT.display,
+                            fontSize: 17,
+                            color: PALETTE.mauve,
+                            letterSpacing: "0.03em",
+                          }}
+                        >
+                          {a.no}
+                        </p>
+                        <p
+                          style={{
+                            fontWeight: 300,
+                            fontSize: 11.5,
+                            color: PALETTE.muted,
+                            marginTop: 2,
+                          }}
+                        >
+                          {a.bank}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          navigator.clipboard?.writeText(
+                            a.no.replace(/\s/g, ""),
+                          )
+                        }
+                        style={{
+                          fontSize: 11,
+                          letterSpacing: "0.08em",
+                          color: PALETTE.roseDeep,
+                          background: PALETTE.greige,
+                          border: `1px solid ${PALETTE.line}`,
+                          borderRadius: 999,
+                          padding: "7px 14px",
+                        }}
+                      >
+                        Хуулах
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Reveal root={scrollRef} className="mt-10 mb-2 text-center">
+              <img
+                src={dans}
+                alt="Талархал"
+                className="w-full mt-4"
+                loading="lazy"
+                decoding="async"
+              />
+            </Reveal>
+          </section>
+
+          {/* CLOSING */}
+          <section
+            className="relative text-center"
+            style={{ padding: "60px 30px 90px", background: PALETTE.paper }}
+          >
+            <Reveal root={scrollRef}>
+              <p
+                className="italic"
+                style={{
+                  fontFamily: FONT.display,
+                  fontSize: 26,
+                  color: PALETTE.mauve,
+                }}
+              >
+                {CONFIG.groom} &amp; {CONFIG.bride}
+              </p>
+              <p
+                className="mt-4"
+                style={{
+                  fontFamily: FONT.accent,
+                  letterSpacing: "0.4em",
+                  textTransform: "uppercase",
+                  fontSize: 12,
+                  color: PALETTE.rose,
+                }}
+              >
+                Thank you
+              </p>
+              <p
+                className="mt-3"
+                style={{ color: PALETTE.blush, fontSize: 20 }}
+              >
+                ♥
+              </p>
+              <p
+                className="mt-10"
+                style={{
+                  fontWeight: 300,
+                  fontSize: 11,
+                  color: PALETTE.muted,
+                  letterSpacing: "0.06em",
+                }}
+              >
+                {CONFIG.dateLabel} — Улаанбаатар
+              </p>
+            </Reveal>
+          </section>
         </div>
 
-        {/* ── Music button ── */}
-        <AnimatePresence>
-          {!showSplash && (
-            <motion.button
-              type="button"
-              key="music-btn"
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={toggleMusic}
-              aria-label={isPlaying ? "Дуу зогсоох" : "Дуу тоглуулах"}
-              className="absolute bottom-10 right-6 z-40 w-12 h-12 bg-white/80 backdrop-blur-sm rounded-full shadow-lg border border-[#e7b596] flex items-center justify-center transition-all active:scale-90"
-            >
-              {isPlaying ? (
-                <div className="flex gap-1 items-end h-4">
-                  <div className="w-1 bg-[#e7b596] animate-music-bar" />
-                  <div className="w-1 bg-[#e7b596] animate-music-bar [animation-delay:0.2s]" />
-                  <div className="w-1 bg-[#e7b596] animate-music-bar [animation-delay:0.4s]" />
-                </div>
-              ) : (
-                <span className="text-[10px] font-bold text-gray-400 uppercase">
-                  Off
-                </span>
-              )}
-            </motion.button>
-          )}
-        </AnimatePresence>
+        {/* Music button */}
+        <button
+          type="button"
+          onClick={toggleMusic}
+          aria-label={isPlaying ? "Хөгжим зогсоох" : "Хөгжим тоглуулах"}
+          className="absolute bottom-6 right-6 z-40 w-11 h-11 rounded-full flex items-center justify-center transition-transform active:scale-90"
+          style={{
+            background: "rgba(255,255,255,0.86)",
+            backdropFilter: "blur(6px)",
+            border: `1px solid ${PALETTE.blush}`,
+            boxShadow: "0 10px 26px -10px rgba(150,110,95,.7)",
+          }}
+        >
+          <span className="flex gap-[2px] items-end h-4">
+            {[0, 1, 2].map((i) => (
+              <span
+                key={i}
+                style={{
+                  width: 2.5,
+                  background: PALETTE.rose,
+                  borderRadius: 2,
+                  height: 6,
+                  animation: isPlaying
+                    ? `wedeq 1s ease-in-out ${i * 0.2}s infinite`
+                    : "none",
+                }}
+              />
+            ))}
+          </span>
+        </button>
       </div>
+
+      {/* Keyframes (Tailwind config-гүйгээр) */}
+      <style>{`
+        @keyframes wedbob {0%,100%{transform:translateY(0) rotate(45deg);opacity:.55}50%{transform:translateY(6px) rotate(45deg);opacity:1}}
+        @keyframes wedeq {0%,100%{height:5px}50%{height:15px}}
+        .no-scrollbar::-webkit-scrollbar{display:none}
+        .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+        @media (prefers-reduced-motion: reduce){*{animation:none !important}}
+      `}</style>
     </div>
   );
 }

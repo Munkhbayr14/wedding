@@ -16,31 +16,33 @@ interface Petal {
   tilt: number;
 }
 
+/* Шинэ дизайны blush/rose өнгөнд тааруулсан дэлбээний өнгөнүүд */
 const PETAL_COLORS = [
-  "rgba(255,182,193,",
-  "rgba(255,160,170,",
-  "rgba(255,200,210,",
-  "rgba(240,150,160,",
-  "rgba(255,220,225,",
+  "rgba(231,207,199,", // blush
+  "rgba(224,166,152,", // rose light
+  "rgba(240,214,208,", // pale blush
+  "rgba(210,150,145,", // rose
+  "rgba(245,228,223,", // almost white
 ];
 
 function createPetal(canvasW: number, canvasH: number): Petal {
   return {
     x: Math.random() * canvasW,
     y: Math.random() * -canvasH,
-    size: Math.random() * 10 + 6,
-    speedY: Math.random() * 0.4 + 0.2, // 1.2+0.6 → 0.4+0.2 (удаан)
-    speedX: Math.random() * 0.3 - 0.15, // 0.6-0.3 → 0.3-0.15 (удаан)
+    size: Math.random() * 9 + 6,
+    speedY: Math.random() * 0.4 + 0.18,
+    speedX: Math.random() * 0.3 - 0.15,
     rot: Math.random() * Math.PI * 2,
-    rotSpeed: (Math.random() - 0.5) * 0.02, // 0.04 → 0.02 (аажим эргэлт)
+    rotSpeed: (Math.random() - 0.5) * 0.02,
     wobble: Math.random() * Math.PI * 2,
-    wobbleSpeed: Math.random() * 0.015 + 0.005, // 0.03+0.01 → 0.015+0.005
-    wobbleAmp: Math.random() * 0.8 + 0.3, // 1.5+0.5 → 0.8+0.3 (бага хэлбэлзэл)
+    wobbleSpeed: Math.random() * 0.015 + 0.005,
+    wobbleAmp: Math.random() * 0.8 + 0.3,
     color: PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)],
-    opacity: Math.random() * 0.4 + 0.5,
+    opacity: Math.random() * 0.4 + 0.45,
     tilt: Math.random() * 0.8 - 0.4,
   };
 }
+
 function drawPetal(ctx: CanvasRenderingContext2D, p: Petal) {
   ctx.save();
   ctx.translate(p.x, p.y);
@@ -70,6 +72,9 @@ const SakuraFalling = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    /* Хөдөлгөөн багасгах тохиргоотой хэрэглэгчдэд амар байлгах */
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -86,7 +91,7 @@ const SakuraFalling = () => {
       canvas.height = canvas.offsetHeight * dpr;
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
-      petals = Array.from({ length: 12 }, () =>
+      petals = Array.from({ length: 14 }, () =>
         createPetal(canvas.offsetWidth, canvas.offsetHeight),
       );
     };
@@ -142,7 +147,7 @@ const SakuraFalling = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 w-full h-full pointer-events-none z-10"
+      className="absolute inset-0 w-full h-full pointer-events-none z-10"
     />
   );
 };

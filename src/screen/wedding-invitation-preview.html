@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Барсбаатар & Одончимэг — Урилга</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF7F2;
+    --greige:#F1E9E0;
+    --blush:#E7CFC7;
+    --rose:#C08A7D;
+    --rose-deep:#A9705F;
+    --mauve:#6E5A52;
+    --ink:#514842;
+    --muted:#9A8B81;
+    --sage:#9AA487;
+    --line:#E4D8CD;
+    --display:"Playfair Display", serif;
+    --accent:"Cormorant Garamond", serif;
+    --body:"Montserrat", sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #F6ECE3 0%, transparent 60%),
+      #E9DED3;
+    font-family:var(--body);
+    color:var(--ink);
+    display:flex;justify-content:center;align-items:flex-start;
+    min-height:100%;
+  }
+  /* Phone frame */
+  .phone{
+    position:relative;
+    width:100%;max-width:440px;
+    min-height:100vh;
+    background:var(--paper);
+    overflow:hidden;
+    box-shadow:0 30px 80px -20px rgba(90,70,60,.35);
+  }
+  @media(min-width:480px){
+    body{align-items:center;padding:26px 0;}
+    .phone{min-height:auto;border-radius:34px;border:1px solid #efe6db;}
+  }
+
+  /* petal canvas */
+  #petals{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6;}
+
+  /* ---------- COVER ---------- */
+  .cover{position:relative;height:100svh;min-height:600px;max-height:900px;overflow:hidden;}
+  @media(min-width:480px){.cover{height:760px;}}
+  .cover__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    filter:saturate(.82) brightness(.96);}
+  .cover__veil{position:absolute;inset:0;
+    background:
+      linear-gradient(180deg, rgba(70,52,45,.28) 0%, rgba(70,52,45,0) 26%, rgba(70,52,45,0) 52%, rgba(251,247,242,.30) 82%, rgba(251,247,242,.96) 100%),
+      radial-gradient(120% 80% at 50% 40%, transparent 55%, rgba(120,90,80,.30) 100%);}
+  .cover__inner{position:absolute;inset:0;z-index:7;display:flex;flex-direction:column;
+    align-items:center;justify-content:space-between;padding:64px 24px 46px;text-align:center;}
+  .cover__eyebrow{font-family:var(--accent);font-weight:400;letter-spacing:.42em;
+    text-transform:uppercase;font-size:12.5px;color:#F6EEE7;
+    text-shadow:0 1px 12px rgba(60,40,35,.45);}
+  .cover__center{display:flex;flex-direction:column;align-items:center;gap:6px;}
+  .cover__names{font-family:var(--display);color:#FCF7F2;line-height:1.06;
+    font-size:46px;font-weight:500;letter-spacing:.01em;
+    text-shadow:0 2px 24px rgba(55,35,30,.5);}
+  .cover__amp{font-family:var(--accent);font-style:italic;font-weight:400;
+    font-size:34px;color:var(--blush);display:block;margin:2px 0;
+    text-shadow:0 2px 20px rgba(55,35,30,.5);}
+  .cover__meta{margin-top:16px;color:#F7EFE8;}
+  .cover__date{font-family:var(--accent);letter-spacing:.34em;font-size:16px;
+    text-shadow:0 1px 14px rgba(60,40,35,.5);}
+  .cover__time{font-family:var(--body);font-weight:300;letter-spacing:.28em;
+    font-size:11px;margin-top:7px;color:#F1E5DC;text-transform:uppercase;
+    text-shadow:0 1px 14px rgba(60,40,35,.5);}
+  .cover__cue{display:flex;flex-direction:column;align-items:center;gap:8px;color:#F3E9E1;}
+  .cover__cue span{font-family:var(--accent);font-style:italic;font-size:13px;letter-spacing:.12em;}
+  .chev{width:18px;height:18px;border-right:1.4px solid #F3E9E1;border-bottom:1.4px solid #F3E9E1;
+    transform:rotate(45deg);animation:bob 2.4s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(45deg);opacity:.55}50%{transform:translateY(6px) rotate(45deg);opacity:1}}
+
+  /* ---------- generic section ---------- */
+  section{background:var(--paper);}
+  .wrap{padding:0 30px;}
+  .eyebrow{font-family:var(--accent);letter-spacing:.4em;text-transform:uppercase;
+    font-size:12px;color:var(--rose);text-align:center;font-weight:500;}
+  .stitle{font-family:var(--display);text-align:center;color:var(--mauve);
+    font-weight:500;font-size:25px;margin-top:12px;letter-spacing:.01em;}
+  .lead{font-family:var(--accent);font-style:italic;font-size:19px;color:var(--rose-deep);
+    text-align:center;line-height:1.6;}
+  .body{font-family:var(--body);font-weight:300;font-size:14.5px;line-height:2.05;
+    color:var(--ink);text-align:center;}
+
+  /* botanical hairline divider */
+  .divider{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 auto;padding:46px 0;}
+  .divider .ln{width:52px;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);}
+  .divider svg{width:20px;height:20px;color:var(--sage);opacity:.9;}
+  .divider--sm{padding:30px 0;}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity 1.05s ease,transform 1.05s cubic-bezier(.2,.7,.2,1);}
+  .reveal.in{opacity:1;transform:none;}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none;}.chev{animation:none;}}
+
+  /* names / roles block */
+  .roles{display:flex;flex-direction:column;gap:26px;padding:6px 0 4px;}
+  .role{display:flex;align-items:center;justify-content:center;gap:16px;}
+  .role__parents{font-family:var(--body);font-weight:300;font-size:12px;color:var(--muted);letter-spacing:.04em;}
+  .role__label{font-family:var(--accent);font-style:italic;font-size:14px;color:var(--rose);}
+  .role__name{font-family:var(--display);font-size:23px;color:var(--mauve);font-weight:500;}
+  .role .col{display:flex;flex-direction:column;gap:3px;text-align:center;min-width:120px;}
+  .role .heart{color:var(--blush);font-size:15px;}
+
+  /* gallery */
+  .gal{columns:2;column-gap:8px;padding:6px 22px 0;}
+  .gal figure{margin:0 0 8px;break-inside:avoid;border-radius:3px;overflow:hidden;position:relative;
+    background:linear-gradient(135deg,#efdfd7,#e3cfc6);cursor:pointer;}
+  .gal img{width:100%;display:block;transition:transform .9s cubic-bezier(.2,.7,.2,1),filter .6s;
+    filter:saturate(.86);}
+  .gal figure:active img{transform:scale(.98);}
+  .gal figure::after{content:"";position:absolute;inset:0;background:rgba(180,120,105,.06);}
+  .gal-more{display:flex;justify-content:center;margin-top:22px;}
+  .gal-more button{font-family:var(--accent);font-style:italic;font-size:15px;letter-spacing:.06em;
+    color:var(--rose-deep);background:transparent;border:1px solid var(--line);
+    border-radius:999px;padding:9px 26px;transition:.35s;}
+  .gal-more button:active{transform:scale(.97);background:var(--greige);}
+
+  /* calendar */
+  .calwrap{padding:8px 30px 0;}
+  .cal-month{font-family:var(--accent);text-align:center;letter-spacing:.34em;text-transform:uppercase;
+    font-size:13px;color:var(--rose);}
+  .cal-big{font-family:var(--display);text-align:center;font-size:40px;color:var(--mauve);
+    margin-top:4px;letter-spacing:.02em;}
+  .cal-sub{text-align:center;font-family:var(--body);font-weight:300;font-size:11.5px;
+    letter-spacing:.26em;color:var(--muted);text-transform:uppercase;margin-top:6px;}
+  table.cal{width:100%;border-collapse:collapse;margin-top:22px;}
+  table.cal th{font-family:var(--body);font-weight:400;font-size:11px;color:var(--muted);padding:8px 0;letter-spacing:.05em;}
+  table.cal td{text-align:center;font-family:var(--body);font-weight:300;font-size:14px;color:var(--ink);
+    height:40px;position:relative;}
+  table.cal td.sun{color:#c98a86;}
+  table.cal td.sat{color:#8ea2b4;}
+  table.cal td .day{position:relative;z-index:2;}
+  table.cal td.wed{color:#fff;font-weight:500;}
+  table.cal td.wed::before{content:"";position:absolute;top:50%;left:50%;
+    width:34px;height:34px;border-radius:50%;transform:translate(-50%,-50%);
+    background:var(--rose);box-shadow:0 6px 16px -6px rgba(160,110,95,.8);z-index:1;}
+  table.cal td.wed::after{content:"♥";position:absolute;top:-3px;left:50%;transform:translateX(-50%);
+    font-size:9px;color:var(--rose);}
+
+  .count{display:flex;justify-content:center;gap:10px;margin-top:30px;}
+  .count .u{display:flex;flex-direction:column;align-items:center;min-width:52px;}
+  .count .n{font-family:var(--display);font-size:26px;color:var(--mauve);line-height:1;}
+  .count .l{font-family:var(--body);font-weight:300;font-size:9.5px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--muted);margin-top:8px;}
+  .count .sep{font-family:var(--display);font-size:20px;color:var(--line);align-self:flex-start;margin-top:2px;}
+  .dday{text-align:center;margin-top:24px;font-family:var(--accent);font-style:italic;font-size:15px;color:var(--rose-deep);}
+  .dday b{font-style:normal;font-family:var(--display);color:var(--rose);}
+
+  /* location */
+  .map{margin:22px 26px 0;border-radius:16px;overflow:hidden;border:1px solid var(--line);
+    box-shadow:0 18px 40px -28px rgba(110,90,80,.6);}
+  .map iframe{display:block;width:100%;height:250px;border:0;filter:saturate(.9);}
+  .venue{text-align:center;margin-top:22px;}
+  .venue h4{font-family:var(--display);font-size:20px;color:var(--mauve);font-weight:500;}
+  .venue p{font-family:var(--body);font-weight:300;font-size:13px;color:var(--muted);margin-top:6px;letter-spacing:.02em;}
+  .venue a{display:inline-block;margin-top:16px;font-family:var(--accent);font-style:italic;
+    font-size:14px;color:var(--rose-deep);border-bottom:1px solid var(--blush);padding-bottom:2px;text-decoration:none;}
+
+  /* contact */
+  .contact{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:6px 26px 0;}
+  .card{display:flex;flex-direction:column;align-items:center;gap:12px;}
+  .card__ph{width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:4px;
+    background:linear-gradient(135deg,#efdfd7,#e3cfc6);}
+  .card__ph img{width:100%;height:100%;object-fit:cover;filter:saturate(.85);}
+  .card__role{font-family:var(--accent);font-style:italic;font-size:13px;color:var(--rose);}
+  .card__name{font-family:var(--display);font-size:19px;color:var(--mauve);margin-top:-4px;}
+  .card__btns{display:flex;gap:10px;margin-top:2px;}
+  .ib{width:40px;height:40px;border-radius:50%;background:var(--greige);color:var(--rose-deep);
+    display:flex;align-items:center;justify-content:center;transition:.3s;border:1px solid var(--line);}
+  .ib:active{transform:scale(.9);background:var(--blush);color:#fff;}
+  .ib svg{width:17px;height:17px;}
+
+  /* gift */
+  .gift{margin:8px 26px 0;}
+  .gift__toggle{width:100%;background:var(--greige);border:1px solid var(--line);border-radius:14px;
+    padding:16px;font-family:var(--accent);font-style:italic;font-size:16px;color:var(--rose-deep);
+    display:flex;align-items:center;justify-content:center;gap:10px;transition:.3s;}
+  .gift__toggle:active{transform:scale(.99);}
+  .gift__panel{max-height:0;overflow:hidden;transition:max-height .55s ease;}
+  .gift__panel.open{max-height:340px;}
+  .acct{background:#fff;border:1px solid var(--line);border-radius:12px;margin-top:12px;padding:18px 18px;}
+  .acct+.acct{margin-top:10px;}
+  .acct__who{font-family:var(--body);font-weight:400;font-size:12px;color:var(--muted);letter-spacing:.06em;}
+  .acct__row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:12px;}
+  .acct__no{font-family:var(--display);font-size:17px;color:var(--mauve);letter-spacing:.03em;}
+  .acct__bank{font-family:var(--body);font-weight:300;font-size:11.5px;color:var(--muted);margin-top:2px;}
+  .copy{font-family:var(--body);font-weight:400;font-size:11px;letter-spacing:.08em;color:var(--rose-deep);
+    background:var(--greige);border:1px solid var(--line);border-radius:999px;padding:7px 14px;transition:.3s;white-space:nowrap;}
+  .copy:active{transform:scale(.94);}
+  .copy.done{background:var(--sage);color:#fff;border-color:var(--sage);}
+
+  /* closing */
+  .closing{position:relative;padding:70px 30px 90px;text-align:center;overflow:hidden;}
+  .closing .sig{font-family:var(--display);font-style:italic;font-size:26px;color:var(--mauve);}
+  .closing .ty{font-family:var(--accent);letter-spacing:.4em;text-transform:uppercase;
+    font-size:12px;color:var(--rose);margin-top:18px;}
+  .closing .heart{color:var(--blush);font-size:20px;margin-top:14px;}
+  .closing .foot{font-family:var(--body);font-weight:300;font-size:11px;color:var(--muted);margin-top:40px;letter-spacing:.06em;}
+
+  /* music button */
+  .music{position:fixed;z-index:30;bottom:22px;right:calc(50% - 220px + 18px);
+    width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.86);
+    backdrop-filter:blur(6px);border:1px solid var(--blush);
+    box-shadow:0 10px 26px -10px rgba(150,110,95,.7);
+    display:flex;align-items:center;justify-content:center;transition:.3s;}
+  .music:active{transform:scale(.9);}
+  @media(max-width:479px){.music{right:18px;}}
+  .bars{display:flex;gap:2px;align-items:flex-end;height:15px;}
+  .bars i{width:2.5px;background:var(--rose);border-radius:2px;height:6px;animation:eq 1s ease-in-out infinite;}
+  .bars i:nth-child(2){animation-delay:.2s}.bars i:nth-child(3){animation-delay:.4s}
+  @keyframes eq{0%,100%{height:5px}50%{height:15px}}
+  .music.paused .bars i{animation-play-state:paused;height:6px;}
+
+  /* lightbox */
+  .lb{position:fixed;inset:0;z-index:50;background:rgba(30,22,20,.94);display:none;
+    align-items:center;justify-content:center;flex-direction:column;}
+  .lb.open{display:flex;}
+  .lb img{max-width:92%;max-height:76vh;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+  .lb__x{position:absolute;top:18px;right:22px;color:#fff;font-size:30px;background:none;border:none;}
+  .lb__c{position:absolute;top:22px;left:0;right:0;text-align:center;color:rgba(255,255,255,.6);
+    font-family:var(--body);font-weight:300;font-size:13px;letter-spacing:.1em;}
+  .lb__nav{position:absolute;top:0;bottom:0;width:30%;display:flex;align-items:center;background:none;border:none;color:rgba(255,255,255,.6);font-size:44px;}
+  .lb__nav.prev{left:0;justify-content:flex-start;padding-left:14px;}
+  .lb__nav.next{right:0;justify-content:flex-end;padding-right:14px;}
+
+  .note{font-family:var(--body);font-weight:300;font-size:10.5px;color:#b6a89d;text-align:center;
+    padding:0 30px 26px;letter-spacing:.03em;}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+  <canvas id="petals"></canvas>
+
+  <!-- COVER -->
+  <header class="cover">
+    <img class="cover__img" alt="cover"
+      src="https://picsum.photos/seed/mn-wedding-cover/900/1320"
+      onerror="this.style.display='none'">
+    <div class="cover__veil"></div>
+    <div class="cover__inner">
+      <p class="cover__eyebrow">The Wedding of</p>
+      <div class="cover__center">
+        <h1 class="cover__names">Барсбаатар<span class="cover__amp">&amp;</span>Одончимэг</h1>
+        <div class="cover__meta">
+          <p class="cover__date">2026 · 03 · 28</p>
+          <p class="cover__time">Saturday&nbsp;&nbsp;11:30</p>
+        </div>
+      </div>
+      <div class="cover__cue">
+        <span>урьж байна</span>
+        <div class="chev"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- GREETING -->
+  <section>
+    <div class="divider reveal">
+      <span class="ln"></span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M12 21c0-6 3-9 8-10-5-1-8-4-8-9-0 5-3 8-8 9 5 1 8 4 8 10z" stroke-linejoin="round"/></svg>
+      <span class="ln"></span>
+    </div>
+    <div class="wrap">
+      <p class="eyebrow reveal">Greeting</p>
+      <p class="lead reveal" style="margin-top:16px;">
+        Хоёр зүрх нэгдэн,<br>нэг гэр бүл болох энэ өдөр
+      </p>
+    </div>
+    <div class="wrap" style="margin-top:26px;">
+      <p class="body reveal">
+        Итгэлээр түшиглэн, хайраар холбогдсон бид хоёрын амьдралын
+        хамгийн нандин энэ мөчид эрхэм таныг хүндэтгэлтэйгээр урьж байна.
+        Бие биеэ энэрэн хайрлаж, аз жаргалаар дүүрэн амьдралыг хамтдаа
+        бүтээх бидний ирээдүйг таны халуун ерөөл гэрэлтүүлэх болно.
+      </p>
+    </div>
+
+    <div class="divider reveal divider--sm">
+      <span class="ln"></span>
+      <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="2.4"/><path d="M12 3v5M12 16v5M3 12h5M16 12h5" stroke="currentColor" stroke-width="1"/></svg>
+      <span class="ln"></span>
+    </div>
+
+    <!-- roles -->
+    <div class="wrap">
+      <div class="roles">
+        <div class="role reveal">
+          <div class="col">
+            <span class="role__parents">Цэрэн · Дулмаа нарын хүү</span>
+            <span class="role__label">Сүйт залуу</span>
+            <span class="role__name">Барсбаатар</span>
+          </div>
+        </div>
+        <div class="role reveal" style="justify-content:center;">
+          <span class="heart">♥</span>
+        </div>
+        <div class="role reveal">
+          <div class="col">
+            <span class="role__parents">Батбаяр · Оюун нарын охин</span>
+            <span class="role__label">Сүйт бүсгүй</span>
+            <span class="role__name">Одончимэг</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section style="padding-top:20px;">
+    <div class="divider reveal divider--sm">
+      <span class="ln"></span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M12 21c0-6 3-9 8-10-5-1-8-4-8-9-0 5-3 8-8 9 5 1 8 4 8 10z" stroke-linejoin="round"/></svg>
+      <span class="ln"></span>
+    </div>
+    <p class="eyebrow reveal">Our Moments</p>
+    <p class="stitle reveal">Дурсамжууд</p>
+    <div class="gal reveal" id="gal" style="margin-top:22px;"></div>
+    <div class="gal-more reveal"><button onclick="openLB(0)">Бүх зургийг үзэх ✦</button></div>
+    <div class="divider divider--sm"></div>
+  </section>
+
+  <!-- CALENDAR + COUNTDOWN -->
+  <section style="background:var(--greige);padding:52px 0;">
+    <p class="cal-month reveal">March&nbsp;2026</p>
+    <p class="cal-big reveal">28</p>
+    <p class="cal-sub reveal">Saturday · 11:30 AM</p>
+    <div class="calwrap reveal">
+      <table class="cal" id="cal"></table>
+    </div>
+    <div class="count reveal" id="count"></div>
+    <p class="dday reveal" id="dday"></p>
+  </section>
+
+  <!-- LOCATION -->
+  <section style="padding:52px 0;">
+    <p class="eyebrow reveal">Location</p>
+    <p class="stitle reveal">Хүрэлцэн ирэх газар</p>
+    <div class="map reveal">
+      <iframe title="Байршил" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10695.247020883977!2d106.95975198065267!3d47.920679739523756!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5d96911c8ad90ded%3A0x154015dc33d0e30a!2z0KPQu9Cw0LDQvdCx0LDQsNGC0LDRgCDQsdCw0L_RgtC40YHRgiDQt9Kv0q_QvSDRh9GD0YPQu9Cz0LDQvQ!5e0!3m2!1sen!2smn!4v1698212444861!5m2!1sen!2smn"></iframe>
+    </div>
+    <div class="venue reveal">
+      <h4>Улаанбаатар · Зүүн чуулган</h4>
+      <p>3 давхар, Их танхим</p>
+      <a href="https://maps.google.com/?q=47.9207,106.9598" target="_blank" rel="noopener">Газрын зураг дээр нээх →</a>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section style="background:var(--greige);padding:52px 0;">
+    <p class="eyebrow reveal">Contact</p>
+    <p class="stitle reveal" style="margin-bottom:24px;">Холбоо барих</p>
+    <div class="contact">
+      <div class="card reveal">
+        <div class="card__ph"><img src="https://picsum.photos/seed/groom-mn/400/400" alt="сүйт залуу" onerror="this.style.display='none'"></div>
+        <span class="card__role">Сүйт залуу</span>
+        <span class="card__name">Барсбаатар</span>
+        <div class="card__btns">
+          <a class="ib" href="tel:99001234" aria-label="залгах"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 5.75A2.75 2.75 0 015.75 3h.99c.46 0 .87.27 1.05.7l1.2 2.8a1.25 1.25 0 01-.29 1.4l-.9.9a12 12 0 005.6 5.6l.9-.9a1.25 1.25 0 011.4-.29l2.8 1.2c.43.19.7.6.7 1.05v.99A2.75 2.75 0 0118.25 21C9.83 21 3 14.17 3 5.75z" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="ib" href="sms:99001234" aria-label="мессеж"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0l-8.32 5.12a2.25 2.25 0 01-2.36 0L3.32 8.91" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </div>
+      <div class="card reveal">
+        <div class="card__ph"><img src="https://picsum.photos/seed/bride-mn/400/400" alt="сүйт бүсгүй" onerror="this.style.display='none'"></div>
+        <span class="card__role">Сүйт бүсгүй</span>
+        <span class="card__name">Одончимэг</span>
+        <div class="card__btns">
+          <a class="ib" href="tel:88001234" aria-label="залгах"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 5.75A2.75 2.75 0 015.75 3h.99c.46 0 .87.27 1.05.7l1.2 2.8a1.25 1.25 0 01-.29 1.4l-.9.9a12 12 0 005.6 5.6l.9-.9a1.25 1.25 0 011.4-.29l2.8 1.2c.43.19.7.6.7 1.05v.99A2.75 2.75 0 0118.25 21C9.83 21 3 14.17 3 5.75z" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="ib" href="sms:88001234" aria-label="мессеж"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0l-8.32 5.12a2.25 2.25 0 01-2.36 0L3.32 8.91" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GIFT -->
+  <section style="padding:52px 0 10px;">
+    <p class="eyebrow reveal">With Heart</p>
+    <p class="stitle reveal" style="margin-bottom:20px;">Мөнгөн бэлэг</p>
+    <div class="gift reveal">
+      <button class="gift__toggle" onclick="toggleGift(this)">Дансны мэдээлэл харах ♥</button>
+      <div class="gift__panel" id="giftPanel">
+        <div class="acct">
+          <p class="acct__who">Сүйт залуу · Барсбаатар</p>
+          <div class="acct__row">
+            <div>
+              <p class="acct__no">5xxx xxxx</p>
+              <p class="acct__bank">Хаан банк</p>
+            </div>
+            <button class="copy" onclick="copyNo(this,'5xxxxxxx')">Хуулах</button>
+          </div>
+        </div>
+        <div class="acct">
+          <p class="acct__who">Сүйт бүсгүй · Одончимэг</p>
+          <div class="acct__row">
+            <div>
+              <p class="acct__no">4xxx xxxx</p>
+              <p class="acct__bank">Голомт банк</p>
+            </div>
+            <button class="copy" onclick="copyNo(this,'4xxxxxxx')">Хуулах</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <section class="closing">
+    <p class="sig reveal">Барсбаатар &amp; Одончимэг</p>
+    <p class="ty reveal">Thank you</p>
+    <p class="heart reveal">♥</p>
+    <p class="foot reveal">2026 · 03 · 28 — Улаанбаатар</p>
+  </section>
+
+  <!-- music -->
+  <button class="music paused" id="music" onclick="toggleMusic()" aria-label="Хөгжим">
+    <span class="bars"><i></i><i></i><i></i></span>
+  </button>
+</div>
+
+<!-- lightbox -->
+<div class="lb" id="lb">
+  <button class="lb__x" onclick="closeLB()" aria-label="хаах">×</button>
+  <p class="lb__c" id="lbc"></p>
+  <button class="lb__nav prev" onclick="navLB(-1)" aria-label="өмнөх">‹</button>
+  <img id="lbimg" alt="зураг">
+  <button class="lb__nav next" onclick="navLB(1)" aria-label="дараах">›</button>
+</div>
+
+<script>
+/* ---------- gallery data (placeholder photos) ---------- */
+var seeds = ["a1","a2","a3","a4","a5","a6","a7","a8","a9"];
+var GAL = seeds.map(function(s,i){
+  var tall = (i%3===0);
+  return "https://picsum.photos/seed/mnw-"+s+"/500/"+(tall?680:520);
+});
+(function(){
+  var g=document.getElementById("gal");
+  GAL.forEach(function(src,i){
+    var fig=document.createElement("figure");
+    fig.onclick=function(){openLB(i);};
+    var im=document.createElement("img");
+    im.src=src; im.loading="lazy"; im.alt="дурсамж "+(i+1);
+    im.onerror=function(){im.style.display="none";};
+    fig.appendChild(im); g.appendChild(fig);
+  });
+})();
+
+/* ---------- lightbox ---------- */
+var lbIdx=0;
+function openLB(i){lbIdx=i;renderLB();document.getElementById("lb").classList.add("open");document.body.style.overflow="hidden";}
+function closeLB(){document.getElementById("lb").classList.remove("open");document.body.style.overflow="";}
+function navLB(d){lbIdx=(lbIdx+d+GAL.length)%GAL.length;renderLB();}
+function renderLB(){document.getElementById("lbimg").src=GAL[lbIdx];document.getElementById("lbc").textContent=(lbIdx+1)+" / "+GAL.length;}
+document.addEventListener("keydown",function(e){
+  if(!document.getElementById("lb").classList.contains("open"))return;
+  if(e.key==="ArrowLeft")navLB(-1);if(e.key==="ArrowRight")navLB(1);if(e.key==="Escape")closeLB();
+});
+/* swipe */
+var tsx=0;var lb=document.getElementById("lb");
+lb.addEventListener("touchstart",function(e){tsx=e.touches[0].clientX;});
+lb.addEventListener("touchend",function(e){var d=tsx-e.changedTouches[0].clientX;if(d>50)navLB(1);if(d<-50)navLB(-1);});
+
+/* ---------- calendar ---------- */
+(function(){
+  var year=2026,month=2,wed=28; // March (0-idx=2)
+  var first=new Date(year,month,1).getDay();
+  var dim=new Date(year,month+1,0).getDate();
+  var head=["S","M","T","W","T","F","S"];
+  var t=document.getElementById("cal");
+  var tr="<tr>";head.forEach(function(h,i){tr+="<th class='"+(i===0?'sun':i===6?'sat':'')+"'>"+h+"</th>";});tr+="</tr>";
+  var cells=[];for(var i=0;i<first;i++)cells.push(null);for(var d=1;d<=dim;d++)cells.push(d);
+  while(cells.length%7!==0)cells.push(null);
+  var rows="";
+  for(var r=0;r<cells.length;r+=7){rows+="<tr>";for(var c=0;c<7;c++){var v=cells[r+c];var cls=c===0?'sun':c===6?'sat':'';if(v===wed)cls='wed';rows+="<td class='"+cls+"'>"+(v?"<span class='day'>"+v+"</span>":"")+"</td>";}rows+="</tr>";}
+  t.innerHTML=tr+rows;
+})();
+
+/* ---------- countdown ---------- */
+var target=new Date(2026,2,28,11,30,0).getTime();
+function tick(){
+  var now=Date.now();var diff=Math.max(0,target-now);
+  var d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),
+      m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);
+  var u=[["Days",d],["Hrs",h],["Min",m],["Sec",s]];
+  document.getElementById("count").innerHTML=u.map(function(x,i){
+    return "<div class='u'><span class='n'>"+String(x[1]).padStart(2,"0")+"</span><span class='l'>"+x[0]+"</span></div>"+(i<3?"<span class='sep'>:</span>":"");
+  }).join("");
+  document.getElementById("dday").innerHTML="Хуримын өдрийг хүртэл <b>D-"+d+"</b> хоног";
+}
+tick();setInterval(tick,1000);
+
+/* ---------- reveal on scroll ---------- */
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}});},{threshold:.12});
+document.querySelectorAll(".reveal").forEach(function(el){io.observe(el);});
+
+/* ---------- gift ---------- */
+function toggleGift(btn){document.getElementById("giftPanel").classList.toggle("open");}
+function copyNo(btn,no){navigator.clipboard&&navigator.clipboard.writeText(no);btn.classList.add("done");btn.textContent="Хууллаа ✓";setTimeout(function(){btn.classList.remove("done");btn.textContent="Хуулах";},1600);}
+
+/* ---------- music (visual; wire real audio in app) ---------- */
+var playing=false;
+function toggleMusic(){playing=!playing;document.getElementById("music").classList.toggle("paused",!playing);}
+window.addEventListener("load",function(){setTimeout(function(){/* auto "on" visual */ playing=true;document.getElementById("music").classList.remove("paused");},600);});
+
+/* ---------- petals ---------- */
+(function(){
+  var canvas=document.getElementById("petals");var ctx=canvas.getContext("2d");
+  var COLORS=["rgba(231,207,199,","rgba(224,138,125,","rgba(240,214,208,","rgba(210,150,150,","rgba(245,225,222,"];
+  var petals=[],raf;
+  function P(w,h){return{x:Math.random()*w,y:Math.random()*-h,size:Math.random()*9+6,
+    sy:Math.random()*.4+.18,sx:Math.random()*.3-.15,rot:Math.random()*6.28,
+    rs:(Math.random()-.5)*.02,wob:Math.random()*6.28,ws:Math.random()*.015+.005,
+    wa:Math.random()*.8+.3,color:COLORS[Math.floor(Math.random()*COLORS.length)],
+    op:Math.random()*.4+.45,tilt:Math.random()*.8-.4};}
+  function resize(){var ph=document.getElementById("phone");var dpr=window.devicePixelRatio||1;
+    canvas.width=ph.offsetWidth*dpr;canvas.height=ph.offsetHeight*dpr;
+    canvas.style.width=ph.offsetWidth+"px";canvas.style.height=ph.offsetHeight+"px";
+    ctx.setTransform(1,0,0,1,0,0);ctx.scale(dpr,dpr);
+    petals=Array.from({length:14},function(){return P(ph.offsetWidth,ph.offsetHeight);});}
+  function draw(p){ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.scale(1,1+Math.sin(p.tilt)*.3);
+    var s=p.size;ctx.beginPath();ctx.moveTo(0,-s);
+    ctx.bezierCurveTo(s*.8,-s*.6,s*.9,s*.2,0,s*.5);ctx.bezierCurveTo(-s*.9,s*.2,-s*.8,-s*.6,0,-s);
+    ctx.fillStyle=p.color+p.op+")";ctx.fill();ctx.restore();}
+  var wind=0,wt=0,wtimer=0;
+  function anim(){var ph=document.getElementById("phone");var w=ph.offsetWidth,h=ph.offsetHeight;
+    ctx.clearRect(0,0,w,h);wtimer++;if(wtimer>180){wt=(Math.random()-.5)*.8;wtimer=0;}wind+=(wt-wind)*.005;
+    petals.forEach(function(p){p.wob+=p.ws;p.rot+=p.rs+wind*.1;p.x+=p.sx+Math.sin(p.wob)*p.wa+wind;p.y+=p.sy;
+      if(p.y>h+20){p.y=-20;p.x=Math.random()*w;}if(p.x>w+20)p.x=-20;if(p.x<-20)p.x=w+20;draw(p);});
+    raf=requestAnimationFrame(anim);}
+  if(!window.matchMedia("(prefers-reduced-motion:reduce)").matches){
+    window.addEventListener("resize",resize);requestAnimationFrame(function(){resize();anim();});
+  }
+})();
+</script>
+</body>
+</html>
