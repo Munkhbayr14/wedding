@@ -129,23 +129,6 @@ const Eyebrow: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </p>
 );
 
-const SectionTitle: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => (
-  <p
-    className="text-center"
-    style={{
-      fontFamily: FONT.display,
-      color: PALETTE.mauve,
-      fontWeight: 500,
-      fontSize: 25,
-      marginTop: 12,
-    }}
-  >
-    {children}
-  </p>
-);
-
 export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
