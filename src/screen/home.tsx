@@ -3,6 +3,17 @@ import {
   motion,
   AnimatePresence as FramerAnimatePresence,
 } from "framer-motion";
+import {
+  addDoc,
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  limit,
+  type DocumentData,
+  type QueryDocumentSnapshot,
+  type Timestamp,
+} from "firebase/firestore";
 import b_1 from "../barsaa/b-1.jpg";
 import b_2 from "../barsaa/b-2.jpg";
 import b_4 from "../barsaa/b-4.jpg";
@@ -12,6 +23,7 @@ import b_9 from "../barsaa/b-9.jpg";
 import covers from "../barsaa/covers.jpg";
 import dans from "../other-image/thank you .png";
 import musicSrc from "../music/UI.mp3";
+import { db, isFirebaseConfigured } from "../firebase";
 import SakuraFalling from "./SakuraFalling";
 import WeddingCalendar from "./weddingCalendar";
 import CoupleContact from "./coupleContact";
@@ -20,8 +32,8 @@ import CoupleContact from "./coupleContact";
    ЗАСВАРЛАХ УТГА (нэр, огноо, байршил) — энд өөрчилнө
 ──────────────────────────────────────────────────────────── */
 const CONFIG = {
-  groom: "Барсбаатар",
-  bride: "Одончимэг",
+  groom: "Мөнхбаяр",
+  bride: "Үүрийнтуяа",
   dateLabel: "2026 · 09 · 12",
   dayLabel: "Saturday · 10:30",
   venueTitle: "Улаанбаатар Зүүн чуулган",
@@ -49,6 +61,15 @@ const FONT = {
 };
 
 const GALLERY_IMAGES = [b_2, b_4, b_1, b_7, b_8, b_9, b_2, b_4, b_1];
+
+const COMMENTS_COLLECTION = "guest-comments";
+
+type CommentItem = {
+  id: string;
+  name: string;
+  message: string;
+  createdAt?: Timestamp | Date | null;
+};
 
 const AnimatePresence = FramerAnimatePresence as React.FC<{
   children?: React.ReactNode;
@@ -133,7 +154,11 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [giftOpen, setGiftOpen] = useState(false);
+  const [comments, setComments] = useState<CommentItem[]>([]);
+  const [commentName, setCommentName] = useState("");
+  const [commentMessage, setCommentMessage] = useState("");
+  const [commentStatus, setCommentStatus] = useState("");
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -244,6 +269,110 @@ export default function Home() {
       document.body.style.overflow = "";
     };
   }, [showGallery]);
+
+  useEffect(() => {
+    if (!db) {
+      setCommentStatus(
+        "Firebase тохиргоо бүрэн биш байна. Comment хэсгийг ашиглахын тулд REACT_APP_FIREBASE_* env утгуудыг бөглөнө үү.",
+      );
+      return;
+    }
+
+    const commentsQuery = query(
+      collection(db, COMMENTS_COLLECTION),
+      orderBy("createdAt", "desc"),
+      limit(6),
+    );
+
+    const unsubscribe = onSnapshot(
+      commentsQuery,
+      (snapshot) => {
+        const nextComments = snapshot.docs.map(
+          (doc: QueryDocumentSnapshot<DocumentData>) => {
+            const data = doc.data();
+            return {
+              id: doc.id,
+              name: String(data.name ?? "Зочин"),
+              message: String(data.message ?? ""),
+              guestCount: Number(data.guestCount ?? 0),
+              createdAt: data.createdAt ?? null,
+            };
+          },
+        );
+
+        setComments(nextComments);
+        setCommentStatus("");
+      },
+      (error) => {
+        console.error("Firestore listener failed", error);
+        setCommentStatus(
+          error.code === "permission-denied"
+            ? "Firestore rules comment уншихыг зөвшөөрөхгүй байна. Rules-ээ шалгаарай."
+            : "Firebase-тай холбогдоход алдаа гарлаа. Консолийг шалгаарай.",
+        );
+      },
+    );
+
+    return unsubscribe;
+  }, []);
+
+  const submitComment = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+
+      if (!db) {
+        setCommentStatus(
+          "Firebase холбогдоогүй байна. Comment хадгалахын тулд env тохиргоо шаардлагатай.",
+        );
+        return;
+      }
+
+      const trimmedName = commentName.trim();
+      const trimmedMessage = commentMessage.trim();
+      const guestCount = 0;
+
+      if (!trimmedName || !trimmedMessage) {
+        setCommentStatus("Нэр, ирэх хүний тоо, сэтгэгдлээ бүрэн бөглөнө үү.");
+        return;
+      }
+
+      setIsSubmittingComment(true);
+      setCommentStatus("");
+
+      try {
+        await addDoc(collection(db, COMMENTS_COLLECTION), {
+          name: trimmedName,
+          guestCount,
+          message: trimmedMessage,
+          createdAt: new Date(),
+        });
+
+        setCommentName("");
+        setCommentMessage("");
+        setCommentStatus("Сэтгэгдэл амжилттай хадгалагдлаа.");
+      } catch (error) {
+        console.error("Failed to save comment", error);
+        setCommentStatus("Хадгалах үед алдаа гарлаа. Дахин оролдоно уу.");
+      } finally {
+        setIsSubmittingComment(false);
+      }
+    },
+    [commentMessage, commentName],
+  );
+
+  const renderCommentTime = useCallback(
+    (createdAt?: Timestamp | Date | null) => {
+      if (!createdAt) return "Шинэ";
+      const date = createdAt instanceof Date ? createdAt : createdAt.toDate();
+      return new Intl.DateTimeFormat("mn-MN", {
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(date);
+    },
+    [],
+  );
 
   return (
     <div
@@ -523,7 +652,7 @@ export default function Home() {
                       color: PALETTE.muted,
                     }}
                   >
-                    Цэрэн · Дулмаа нарын хүү
+                    Мөнхбаатар · Ариунтуяа нарын хүү
                   </span>
                   <span
                     style={{
@@ -564,7 +693,7 @@ export default function Home() {
                       color: PALETTE.muted,
                     }}
                   >
-                    Батбаяр · Оюун нарын охин
+                    Батбаяр · Болормаа нарын охин
                   </span>
                   <span
                     style={{
@@ -734,7 +863,7 @@ export default function Home() {
             </Reveal>
 
             <div className="mx-6 mt-5">
-              <button
+              {/* <button
                 type="button"
                 onClick={() => setGiftOpen((v) => !v)}
                 className="w-full transition-transform active:scale-[0.99]"
@@ -748,12 +877,9 @@ export default function Home() {
                   fontSize: 16,
                   color: PALETTE.roseDeep,
                 }}
-              >
-                Дансны мэдээлэл харах
-              </button>
+              ></button> */}
               <div
                 style={{
-                  maxHeight: giftOpen ? 340 : 0,
                   overflow: "hidden",
                   transition: "max-height .55s ease",
                 }}
@@ -761,8 +887,8 @@ export default function Home() {
                 {[
                   {
                     who: "Сүйт залуу · " + CONFIG.groom,
-                    no: "5xxx xxxx",
-                    bank: "Хаан банк",
+                    no: "1235121875",
+                    bank: "Голомт банк",
                   },
                   {
                     who: "Сүйт бүсгүй · " + CONFIG.bride,
@@ -835,19 +961,152 @@ export default function Home() {
                 ))}
               </div>
             </div>
+          </section>
 
-            <Reveal root={scrollRef} className="mt-10 mb-2 text-center">
-              <img
-                src={dans}
-                alt="Талархал"
-                className="w-full mt-4"
-                loading="lazy"
-                decoding="async"
-              />
+          {/* COMMENTS */}
+          <section style={{ background: PALETTE.paper, padding: "8px 0 44px" }}>
+            <Reveal root={scrollRef}>
+              <Eyebrow>Guestbook</Eyebrow>
             </Reveal>
+
+            <Reveal root={scrollRef} delay={0.05}>
+              <div
+                className="mx-6 mt-5 rounded-3xl border bg-white/85 p-5 shadow-[0_16px_34px_-28px_rgba(110,90,80,.55)] backdrop-blur-sm"
+                style={{ borderColor: PALETTE.line }}
+              >
+                <p
+                  className="text-center"
+                  style={{
+                    fontFamily: FONT.accent,
+                    fontStyle: "italic",
+                    fontSize: 18,
+                    color: PALETTE.roseDeep,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  Сайхан ерөөл, мэндчилгээгээ үлдээгээрэй.
+                </p>
+
+                <form
+                  className="mt-5 flex flex-col gap-3"
+                  onSubmit={submitComment}
+                >
+                  <input
+                    value={commentName}
+                    onChange={(event) => setCommentName(event.target.value)}
+                    placeholder="Таны нэр"
+                    className="w-full rounded-2xl border bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-transparent focus:ring-2"
+                    style={{
+                      borderColor: PALETTE.line,
+                      color: PALETTE.ink,
+                    }}
+                  />
+
+                  <textarea
+                    value={commentMessage}
+                    onChange={(event) => setCommentMessage(event.target.value)}
+                    placeholder="Хүндэтгэлийн үг, ерөөлөө энд бичнэ үү"
+                    rows={4}
+                    className="w-full rounded-2xl border bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-transparent focus:ring-2"
+                    style={{ borderColor: PALETTE.line, color: PALETTE.ink }}
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={isSubmittingComment}
+                    className="rounded-full px-5 py-3 text-sm transition-transform active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                    style={{
+                      background: PALETTE.roseDeep,
+                      color: "#fff7f2",
+                      fontFamily: FONT.accent,
+                      letterSpacing: "0.08em",
+                    }}
+                  >
+                    {isSubmittingComment
+                      ? "Хадгалж байна..."
+                      : "Сэтгэгдэл илгээх"}
+                  </button>
+                </form>
+
+                <p
+                  className="mt-3 text-center text-xs"
+                  style={{ color: PALETTE.muted, minHeight: 18 }}
+                >
+                  {commentStatus ||
+                    (isFirebaseConfigured
+                      ? ""
+                      : "Firebase тохиргоо бүрэн биш байна.")}
+                </p>
+              </div>
+            </Reveal>
+
+            <div className="mx-6 mt-6 grid gap-3">
+              {comments.length > 0 ? (
+                comments.map((comment, index) => (
+                  <Reveal
+                    root={scrollRef}
+                    key={comment.id}
+                    delay={Math.min(index * 0.05, 0.18)}
+                  >
+                    <div
+                      className="rounded-2xl border bg-white px-4 py-4 shadow-[0_12px_24px_-24px_rgba(110,90,80,.5)]"
+                      style={{ borderColor: PALETTE.line }}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p
+                            style={{
+                              fontFamily: FONT.display,
+                              fontSize: 18,
+                              color: PALETTE.mauve,
+                            }}
+                          >
+                            {comment.name}
+                          </p>
+                        </div>
+                        <span
+                          className="text-[11px]"
+                          style={{ color: PALETTE.rose }}
+                        >
+                          {renderCommentTime(comment.createdAt)}
+                        </span>
+                      </div>
+                      <p
+                        className="mt-3 text-sm leading-7"
+                        style={{ color: PALETTE.ink }}
+                      >
+                        {comment.message}
+                      </p>
+                    </div>
+                  </Reveal>
+                ))
+              ) : (
+                <Reveal root={scrollRef}>
+                  <div
+                    className="mx-0 rounded-2xl border border-dashed bg-transparent px-4 py-6 text-center"
+                    style={{ borderColor: PALETTE.line }}
+                  >
+                    <p style={{ color: PALETTE.muted, fontSize: 13 }}>
+                      Одоогоор сэтгэгдэл алга байна. Эхний мэндчилгээг та
+                      үлдээгээрэй.
+                    </p>
+                  </div>
+                </Reveal>
+              )}
+            </div>
           </section>
 
           {/* CLOSING */}
+
+          <Reveal root={scrollRef} className="mt-10 mb-2 text-center">
+            <img
+              src={dans}
+              alt="Талархал"
+              className="w-full mt-4"
+              loading="lazy"
+              decoding="async"
+            />
+          </Reveal>
           <section
             className="relative text-center"
             style={{ padding: "60px 30px 90px", background: PALETTE.paper }}

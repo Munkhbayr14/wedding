@@ -27,7 +27,14 @@ interface Person {
 
 function PhoneIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} width="17" height="17">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.7}
+      width="17"
+      height="17"
+    >
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -38,7 +45,14 @@ function PhoneIcon() {
 }
 function SmsIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} width="17" height="17">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.7}
+      width="17"
+      height="17"
+    >
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -128,14 +142,14 @@ function ContactCard({ person }: { person: Person }) {
 export default function CoupleContact() {
   const groom: Person = {
     role: "Сүйт залуу",
-    name: "Барсбаатар",
-    phone: "99001234",
+    name: "Мөнхбаяр",
+    phone: "99662716",
     photo: groomPhoto,
   };
   const bride: Person = {
     role: "Сүйт бүсгүй",
-    name: "Одончимэг",
-    phone: "88001234",
+    name: "Үүрийнтуяа",
+    phone: "85189964",
     photo: bridePhoto,
   };
 
