@@ -156,10 +156,7 @@ export default function CoupleContact() {
   };
 
   return (
-    <section
-      className="font-elegant font-thin"
-      style={{ padding: "52px 0" }}
-    >
+    <section className="font-elegant font-thin" style={{ padding: "0px 0" }}>
       <p
         className="text-center"
         style={{
@@ -182,9 +179,7 @@ export default function CoupleContact() {
           marginTop: 12,
           marginBottom: 24,
         }}
-      >
-        Холбоо барих
-      </p>
+      ></p>
 
       <div className="grid grid-cols-2 gap-4 px-7">
         <ContactCard person={groom} />

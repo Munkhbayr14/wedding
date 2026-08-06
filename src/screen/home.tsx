@@ -336,7 +336,7 @@ export default function Home() {
       const guestCount = 0;
 
       if (!trimmedName || !trimmedMessage) {
-        setCommentStatus("Нэр, ирэх хүний тоо, сэтгэгдлээ бүрэн бөглөнө үү.");
+        setCommentStatus("Нэр, сэтгэгдлээ бүрэн бөглөнө үү.");
         return;
       }
 
@@ -697,7 +697,7 @@ export default function Home() {
                       color: PALETTE.muted,
                     }}
                   >
-                    Батбаяр · Болормаа нарын охин
+                    Дарханбаатар · Болормаа нарын охин
                   </span>
                   <span
                     style={{
@@ -944,7 +944,9 @@ export default function Home() {
                       <button
                         type="button"
                         onClick={() => {
-                          navigator.clipboard?.writeText(a.no.replace(/\s/g, ""));
+                          navigator.clipboard?.writeText(
+                            a.no.replace(/\s/g, ""),
+                          );
                           setCopiedAccount(i);
                           window.setTimeout(() => setCopiedAccount(null), 1400);
                         }}
@@ -988,7 +990,7 @@ export default function Home() {
                     lineHeight: 1.6,
                   }}
                 >
-                  Сайхан ерөөл, мэндчилгээгээ үлдээгээрэй.
+                  Мэндчилгээгээ үлдээгээрэй.
                 </p>
 
                 <form
@@ -1153,7 +1155,7 @@ export default function Home() {
                   letterSpacing: "0.06em",
                 }}
               >
-                {CONFIG.dateLabel} — Улаанбаатар
+                Улаанбаатар зүүн чуулган
               </p>
             </Reveal>
           </section>
