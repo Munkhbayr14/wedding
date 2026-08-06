@@ -16,13 +16,13 @@ interface Petal {
   tilt: number;
 }
 
-/* Жинхэнэ сакура цэцгийн ягаан өнгөнүүд */
+/* Сакурагийн хөнгөн ягаан болон лаванда өнгөнүүд */
 const PETAL_COLORS = [
-  "rgba(255,183,197,", // sakura pink
-  "rgba(255,205,210,", // light pink
-  "rgba(252,163,180,", // deeper pink
-  "rgba(255,218,224,", // pale pink
-  "rgba(247,143,166,", // rose pink
+  "rgba(236,231,242,", // soft lilac
+  "rgba(178,162,191,", // dusty violet
+  "rgba(251,251,253,", // off-white
+  "rgba(225,214,236,", // pale lavender
+  "rgba(203,183,211,", // muted mauve
 ];
 
 function createPetal(canvasW: number, canvasH: number): Petal {
@@ -43,8 +43,6 @@ function createPetal(canvasW: number, canvasH: number): Petal {
   };
 }
 
-/* Сакура дэлбээний жинхэнэ хэлбэр: орой дээрээ жижиг зурамтай (notch),
-   доошоо нарийсаж очих зөв 5-дэлбээт цэцгийн нэг дэлбээний хэлбэр */
 function drawPetal(ctx: CanvasRenderingContext2D, p: Petal) {
   ctx.save();
   ctx.translate(p.x, p.y);
@@ -54,33 +52,16 @@ function drawPetal(ctx: CanvasRenderingContext2D, p: Petal) {
   const s = p.size;
 
   ctx.beginPath();
-  // Дээд оройн жижиг зурам (notch) төвөөс эхэлнэ
-  ctx.moveTo(0, -s * 0.15);
-  // Зүүн тал: зурмаас дээшээ, гадагшаа тойрч, доод оройн ойролцоо орно
-  ctx.bezierCurveTo(
-    -s * 0.65,
-    -s * 0.85,
-    -s * 0.95,
-    -s * 0.1,
-    -s * 0.5,
-    s * 0.55,
-  );
-  // Зүүн доод хэсгээс доод оройн зөөлөн цэг рүү
-  ctx.quadraticCurveTo(-s * 0.15, s * 0.95, 0, s * 0.7);
-  // Доод оройн зөөлөн цэгээс баруун доод хэсэг рүү
-  ctx.quadraticCurveTo(s * 0.15, s * 0.95, s * 0.5, s * 0.55);
-  // Баруун тал: гадагшаа тойрч, зурам руу буцаж орно
-  ctx.bezierCurveTo(s * 0.95, -s * 0.1, s * 0.65, -s * 0.85, 0, -s * 0.15);
-  ctx.closePath();
-
+  ctx.moveTo(0, -s);
+  ctx.bezierCurveTo(s * 0.8, -s * 0.6, s * 0.9, s * 0.2, 0, s * 0.5);
+  ctx.bezierCurveTo(-s * 0.9, s * 0.2, -s * 0.8, -s * 0.6, 0, -s);
   ctx.fillStyle = p.color + p.opacity + ")";
   ctx.fill();
 
-  // Дунд судал (vein) — дэлбээнд гүн ижил байдал өгнө
   ctx.beginPath();
-  ctx.moveTo(0, -s * 0.05);
-  ctx.lineTo(0, s * 0.6);
-  ctx.strokeStyle = p.color + p.opacity * 0.45 + ")";
+  ctx.moveTo(0, -s * 0.9);
+  ctx.bezierCurveTo(s * 0.15, 0, s * 0.05, s * 0.3, 0, s * 0.45);
+  ctx.strokeStyle = p.color + p.opacity * 0.4 + ")";
   ctx.lineWidth = 0.6;
   ctx.stroke();
 
