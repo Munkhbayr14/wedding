@@ -4,15 +4,13 @@ import { useEffect, useState } from "react";
 const WEDDING = new Date(2026, 8, 12, 10, 30, 0); // 2026-09-12 10:30 (сар 0-indexed: 8 = 9-р сар)
 
 const P = {
-  paper: "#FBF7F2",
-  greige: "#F1E9E0",
-  blush: "#E7CFC7",
-  rose: "#C08A7D",
-  roseDeep: "#A9705F",
-  mauve: "#6E5A52",
-  ink: "#514842",
-  muted: "#9A8B81",
-  line: "#E4D8CD",
+  paper: "#FBFBFD",
+  lilac: "#ECE7F2",
+  violet: "#B2A2BF",
+  violetDeep: "#8F7DA1",
+  ink: "#5A5466",
+  muted: "#8E8397",
+  line: "#E7E0EC",
 };
 /* Хуучин font-elegant-ийг section-оос өвлүүлнэ */
 const F = {
@@ -63,7 +61,7 @@ export default function WeddingCalendar() {
   return (
     <section
       className="font-elegant font-thin"
-      style={{ background: P.greige, padding: "52px 0" }}
+      style={{ background: P.paper, padding: "52px 0" }}
     >
       <p
         className="text-center"
@@ -72,7 +70,7 @@ export default function WeddingCalendar() {
           letterSpacing: "0.34em",
           textTransform: "uppercase",
           fontSize: 13,
-          color: P.rose,
+          color: P.violet,
         }}
       >
         {monthName}&nbsp;{year}
@@ -82,7 +80,7 @@ export default function WeddingCalendar() {
         style={{
           fontFamily: F.display,
           fontSize: 40,
-          color: P.mauve,
+          color: P.violetDeep,
           marginTop: 4,
         }}
       >
@@ -115,7 +113,7 @@ export default function WeddingCalendar() {
                     padding: "8px 0",
                     letterSpacing: "0.05em",
                     color:
-                      i === 0 ? "#c98a86" : i === 6 ? "#8ea2b4" : P.muted,
+                      i === 0 || i === 6 ? P.violet : P.muted,
                   }}
                 >
                   {hd}
@@ -130,11 +128,9 @@ export default function WeddingCalendar() {
                   const isWed = day === weddingDay;
                   const color = isWed
                     ? "#fff"
-                    : c === 0
-                      ? "#c98a86"
-                      : c === 6
-                        ? "#8ea2b4"
-                        : P.ink;
+                    : c === 0 || c === 6
+                      ? P.violet
+                      : P.ink;
                   return (
                     <td
                       key={c}
@@ -157,8 +153,8 @@ export default function WeddingCalendar() {
                             height: 34,
                             borderRadius: "50%",
                             transform: "translate(-50%,-50%)",
-                            background: P.rose,
-                            boxShadow: "0 6px 16px -6px rgba(160,110,95,.8)",
+                            background: P.violet,
+                            boxShadow: "0 6px 16px -6px rgba(178,162,191,.45)",
                             zIndex: 1,
                           }}
                         />
@@ -187,7 +183,7 @@ export default function WeddingCalendar() {
                 style={{
                   fontFamily: F.display,
                   fontSize: 26,
-                  color: P.mauve,
+                  color: P.violetDeep,
                   lineHeight: 1,
                 }}
               >
@@ -228,7 +224,7 @@ export default function WeddingCalendar() {
           fontFamily: F.accent,
           fontStyle: "italic",
           fontSize: 15,
-          color: P.roseDeep,
+          color: P.violetDeep,
         }}
       >
         Хуримын өдрийг хүртэл{" "}
@@ -236,7 +232,7 @@ export default function WeddingCalendar() {
           style={{
             fontStyle: "normal",
             fontFamily: F.display,
-            color: P.rose,
+            color: P.violet,
           }}
         >
           D-{d}

@@ -41,16 +41,19 @@ const CONFIG = {
 };
 
 const PALETTE = {
-  paper: "#FBF7F2",
-  greige: "#F1E9E0",
-  blush: "#E7CFC7",
-  rose: "#C08A7D",
-  roseDeep: "#A9705F",
-  mauve: "#6E5A52",
-  ink: "#514842",
-  muted: "#9A8B81",
+  paper: "#FBFBFD",
+  lilac: "#ECE7F2",
+  violet: "#B2A2BF",
+  violetDeep: "#8F7DA1",
+  blush: "#EDE5F3",
+  rose: "#B2A2BF",
+  roseDeep: "#8F7DA1",
+  mauve: "#8F7DA1",
+  greige: "#ECE7F2",
+  ink: "#5A5466",
+  muted: "#8E8397",
   sage: "#9AA487",
-  line: "#E4D8CD",
+  line: "#E7E0EC",
 };
 
 /* Хуучин font-elegant-ийг эх контейнерээс өвлүүлнэ */
@@ -159,6 +162,7 @@ export default function Home() {
   const [commentMessage, setCommentMessage] = useState("");
   const [commentStatus, setCommentStatus] = useState("");
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [copiedAccount, setCopiedAccount] = useState<number | null>(null);
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -377,7 +381,7 @@ export default function Home() {
   return (
     <div
       className="h-screen w-full flex justify-center items-center overflow-hidden font-elegant font-thin"
-      style={{ background: "#E9DED3" }}
+      style={{ background: PALETTE.lilac }}
     >
       <div
         className="relative w-full max-w-[440px] h-full md:h-[94vh] overflow-hidden flex flex-col md:rounded-[34px] md:shadow-2xl"
@@ -476,7 +480,7 @@ export default function Home() {
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(180deg, rgba(70,52,45,.28) 0%, rgba(70,52,45,0) 26%, rgba(70,52,45,0) 52%, rgba(251,247,242,.30) 82%, rgba(251,247,242,.97) 100%)",
+                  "linear-gradient(180deg, rgba(143,125,161,.24) 0%, rgba(143,125,161,0) 26%, rgba(143,125,161,0) 52%, rgba(251,251,253,.30) 82%, rgba(251,251,253,.97) 100%)",
               }}
             />
             <div className="absolute inset-0 z-[7] flex flex-col items-center justify-between text-center px-6 pt-16 pb-12">
@@ -489,7 +493,7 @@ export default function Home() {
                   letterSpacing: "0.42em",
                   textTransform: "uppercase",
                   fontSize: 12.5,
-                  color: "#F6EEE7",
+                  color: PALETTE.paper,
                   textShadow: "0 1px 12px rgba(60,40,35,.45)",
                 }}
               >
@@ -503,7 +507,7 @@ export default function Home() {
                   transition={{ delay: 0.55, duration: 1.1 }}
                   style={{
                     fontFamily: FONT.display,
-                    color: "#FCF7F2",
+                    color: PALETTE.paper,
                     lineHeight: 1.06,
                     fontSize: 46,
                     fontStyle: "italic",
@@ -939,11 +943,11 @@ export default function Home() {
                       </div>
                       <button
                         type="button"
-                        onClick={() =>
-                          navigator.clipboard?.writeText(
-                            a.no.replace(/\s/g, ""),
-                          )
-                        }
+                        onClick={() => {
+                          navigator.clipboard?.writeText(a.no.replace(/\s/g, ""));
+                          setCopiedAccount(i);
+                          window.setTimeout(() => setCopiedAccount(null), 1400);
+                        }}
                         style={{
                           fontSize: 11,
                           letterSpacing: "0.08em",
@@ -954,7 +958,7 @@ export default function Home() {
                           padding: "7px 14px",
                         }}
                       >
-                        Хуулах
+                        {copiedAccount === i ? "Copied" : "Хуулах"}
                       </button>
                     </div>
                   </div>
@@ -1016,8 +1020,8 @@ export default function Home() {
                     disabled={isSubmittingComment}
                     className="rounded-full px-5 py-3 text-sm transition-transform active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                     style={{
-                      background: PALETTE.roseDeep,
-                      color: "#fff7f2",
+                      background: PALETTE.greige,
+                      color: PALETTE.roseDeep,
                       fontFamily: FONT.accent,
                       letterSpacing: "0.08em",
                     }}

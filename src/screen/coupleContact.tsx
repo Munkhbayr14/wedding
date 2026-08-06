@@ -2,14 +2,16 @@ import groomPhoto from "../barsaa/b-7.jpg";
 import bridePhoto from "../barsaa/b-8.jpg";
 
 const P = {
-  paper: "#FBF7F2",
-  greige: "#F1E9E0",
-  blush: "#E7CFC7",
-  rose: "#C08A7D",
-  roseDeep: "#A9705F",
-  mauve: "#6E5A52",
-  muted: "#9A8B81",
-  line: "#E4D8CD",
+  paper: "#FBFBFD",
+  lilac: "#ECE7F2",
+  blush: "#EDE5F3",
+  rose: "#B2A2BF",
+  roseDeep: "#8F7DA1",
+  mauve: "#8F7DA1",
+  greige: "#ECE7F2",
+  ink: "#5A5466",
+  muted: "#8E8397",
+  line: "#E7E0EC",
 };
 /* Хуучин font-elegant-ийг section-оос өвлүүлнэ */
 const F = {
@@ -70,7 +72,7 @@ function ContactCard({ person }: { person: Person }) {
         style={{
           aspectRatio: "1 / 1",
           borderRadius: 4,
-          background: "linear-gradient(135deg,#efdfd7,#e3cfc6)",
+          background: "linear-gradient(135deg, #ECE7F2, #D9CFE7)",
         }}
       >
         <img
@@ -156,7 +158,7 @@ export default function CoupleContact() {
   return (
     <section
       className="font-elegant font-thin"
-      style={{ background: P.greige, padding: "52px 0" }}
+      style={{ padding: "52px 0" }}
     >
       <p
         className="text-center"
