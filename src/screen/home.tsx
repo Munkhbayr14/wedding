@@ -193,6 +193,9 @@ export default function Home() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number>(0);
 
+  const [showAllComments, setShowAllComments] = useState(false);
+  const visibleComments = comments.slice(0, 5);
+
   /* Хөгжим: эхлээд дуутай autoplay оролдоно. Хориглогдвол ДУУГҮЙ autoplay
      (бүх браузер зөвшөөрдөг) хийгээд, хэрэглэгчийн анхны хүрэлт/дарлага дээр
      дууг нь асаана. */
@@ -1026,10 +1029,7 @@ export default function Home() {
                     onChange={(event) => setCommentName(event.target.value)}
                     placeholder="Таны нэр"
                     className="w-full rounded-2xl border bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-transparent focus:ring-2"
-                    style={{
-                      borderColor: PALETTE.line,
-                      color: PALETTE.ink,
-                    }}
+                    style={{ borderColor: PALETTE.line, color: PALETTE.ink }}
                   />
 
                   <textarea
@@ -1072,7 +1072,7 @@ export default function Home() {
 
             <div className="mx-6 mt-6 grid gap-3">
               {comments.length > 0 ? (
-                comments.map((comment, index) => (
+                visibleComments.map((comment, index) => (
                   <Reveal
                     root={scrollRef}
                     key={comment.id}
@@ -1123,8 +1123,105 @@ export default function Home() {
                   </div>
                 </Reveal>
               )}
+
+              {comments.length > 5 && (
+                <button
+                  onClick={() => setShowAllComments(true)}
+                  className="mt-1 rounded-full border px-5 py-2.5 text-xs transition-colors active:scale-[0.99]"
+                  style={{
+                    borderColor: PALETTE.line,
+                    color: PALETTE.roseDeep,
+                    fontFamily: FONT.accent,
+                    letterSpacing: "0.08em",
+                    background: "transparent",
+                  }}
+                >
+                  Бүгдийн харах ({comments.length})
+                </button>
+              )}
             </div>
           </section>
+
+          {/* Modal — бүх сэтгэгдлийг scroll-той харуулна */}
+          <AnimatePresence>
+            {showAllComments && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 flex items-end justify-center sm:items-center"
+                style={{ background: "rgba(40,30,28,.45)" }}
+                onClick={() => setShowAllComments(false)}
+              >
+                <motion.div
+                  initial={{ y: 40, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 40, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  onClick={(event) => event.stopPropagation()}
+                  className="w-full max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col"
+                  style={{ background: PALETTE.paper, maxHeight: "80vh" }}
+                >
+                  <div
+                    className="flex items-center justify-between px-5 py-4 border-b"
+                    style={{ borderColor: PALETTE.line }}
+                  >
+                    <p
+                      style={{
+                        fontFamily: FONT.display,
+                        fontSize: 18,
+                        color: PALETTE.mauve,
+                      }}
+                    >
+                      Бүх сэтгэгдэл ({comments.length})
+                    </p>
+                    <button
+                      onClick={() => setShowAllComments(false)}
+                      className="rounded-full w-8 h-8 flex items-center justify-center text-lg"
+                      style={{ color: PALETTE.muted }}
+                      aria-label="Хаах"
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  <div className="overflow-y-auto px-5 py-4 flex flex-col gap-3">
+                    {comments.map((comment) => (
+                      <div
+                        key={comment.id}
+                        className="rounded-2xl border bg-white px-4 py-4 shadow-[0_12px_24px_-24px_rgba(110,90,80,.5)]"
+                        style={{ borderColor: PALETTE.line }}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <p
+                            style={{
+                              fontFamily: FONT.display,
+                              fontSize: 18,
+                              color: PALETTE.mauve,
+                            }}
+                          >
+                            {comment.name}
+                          </p>
+                          <span
+                            className="text-[11px]"
+                            style={{ color: PALETTE.rose }}
+                          >
+                            {renderCommentTime(comment.createdAt)}
+                          </span>
+                        </div>
+                        <p
+                          className="mt-3 text-sm leading-7"
+                          style={{ color: PALETTE.ink }}
+                        >
+                          {comment.message}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* CLOSING */}
 
