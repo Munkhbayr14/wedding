@@ -1,5 +1,5 @@
-import groomPhoto from "../barsaa/b-7.jpg";
-import bridePhoto from "../barsaa/b-8.jpg";
+import groomPhoto from "../barsaa/munkhbayar.jpg";
+import bridePhoto from "../barsaa/uuree.jpg";
 
 const P = {
   paper: "#FBFBFD",

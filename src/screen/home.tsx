@@ -16,10 +16,19 @@ import {
 } from "firebase/firestore";
 import b_1 from "../barsaa/b-1.jpg";
 import b_2 from "../barsaa/b-2.jpg";
+import b_3 from "../barsaa/b-3.jpg";
 import b_4 from "../barsaa/b-4.jpg";
+import b_5 from "../barsaa/b-5.jpg";
+import b_6 from "../barsaa/b-6.jpg";
 import b_7 from "../barsaa/b-7.jpg";
 import b_8 from "../barsaa/b-8.jpg";
 import b_9 from "../barsaa/b-9.jpg";
+import b_10 from "../barsaa/b-10.jpg";
+import b_11 from "../barsaa/b-11.jpg";
+import b_12 from "../barsaa/b-12.jpg";
+import b_13 from "../barsaa/b-13.jpg";
+import b_14 from "../barsaa/b-14.jpg";
+import b_15 from "../barsaa/b-15.jpg";
 import covers from "../barsaa/covers.jpg";
 import dans from "../other-image/thank you .png";
 import musicSrc from "../music/UI.mp3";
@@ -63,7 +72,23 @@ const FONT = {
   body: "inherit",
 };
 
-const GALLERY_IMAGES = [b_2, b_4, b_1, b_7, b_8, b_9, b_2, b_4, b_1];
+const GALLERY_IMAGES = [
+  b_4,
+  b_13,
+  b_9,
+  b_1,
+  b_8,
+  b_15,
+  b_6,
+  b_10,
+  b_2,
+  b_12,
+  b_5,
+  b_11,
+  b_7,
+  b_14,
+  b_3,
+];
 
 const COMMENTS_COLLECTION = "guest-comments";
 
@@ -500,7 +525,7 @@ export default function Home() {
                 The Wedding of
               </motion.p>
 
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center mt-[450px]">
                 <motion.h1
                   initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -891,12 +916,12 @@ export default function Home() {
                 {[
                   {
                     who: "Сүйт залуу · " + CONFIG.groom,
-                    no: "1235121875",
+                    no: "MN900015001235121875",
                     bank: "Голомт банк",
                   },
                   {
                     who: "Сүйт бүсгүй · " + CONFIG.bride,
-                    no: "4xxx xxxx",
+                    no: "MN610005005312464838",
                     bank: "Голомт банк",
                   },
                 ].map((a, i) => (
