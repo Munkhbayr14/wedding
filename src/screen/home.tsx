@@ -525,68 +525,67 @@ export default function Home() {
                 The Wedding of
               </motion.p>
 
-              <div className="flex flex-col items-center mt-[450px]">
-                <motion.h1
-                  initial={{ opacity: 0, y: 18 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.55, duration: 1.1 }}
+              <motion.h1
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.55, duration: 1.1 }}
+                style={{
+                  fontFamily: FONT.display,
+                  color: PALETTE.paper,
+                  lineHeight: 1.06,
+                  fontSize: 40,
+                  fontStyle: "italic",
+                  textShadow: "0 2px 24px rgba(55,35,30,.5)",
+                }}
+              >
+                <div style={{ opacity: 0.7 }}>{CONFIG.groom}</div>
+
+                <span
                   style={{
-                    fontFamily: FONT.display,
-                    color: PALETTE.paper,
-                    lineHeight: 1.06,
-                    fontSize: 46,
+                    fontFamily: FONT.accent,
                     fontStyle: "italic",
-                    textShadow: "0 2px 24px rgba(55,35,30,.5)",
+                    fontSize: 34,
+                    color: PALETTE.blush,
+                    display: "block",
+                    margin: "2px 0",
                   }}
                 >
-                  {CONFIG.groom}
-                  <span
-                    style={{
-                      fontFamily: FONT.accent,
-                      fontStyle: "italic",
-                      fontSize: 34,
-                      color: PALETTE.blush,
-                      display: "block",
-                      margin: "2px 0",
-                    }}
-                  >
-                    &amp;
-                  </span>
-                  {CONFIG.bride}
-                </motion.h1>
+                  &amp;
+                </span>
+                <div style={{ opacity: 0.7 }}>{CONFIG.bride}</div>
+              </motion.h1>
 
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1, duration: 1 }}
-                  className="mt-4"
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1, duration: 1 }}
+                className="mt-4"
+              >
+                <p
+                  style={{
+                    fontFamily: FONT.accent,
+                    letterSpacing: "0.34em",
+                    fontSize: 16,
+                    color: "#F7EFE8",
+                    textShadow: "0 1px 14px rgba(60,40,35,.5)",
+                  }}
                 >
-                  <p
-                    style={{
-                      fontFamily: FONT.accent,
-                      letterSpacing: "0.34em",
-                      fontSize: 16,
-                      color: "#F7EFE8",
-                      textShadow: "0 1px 14px rgba(60,40,35,.5)",
-                    }}
-                  >
-                    {CONFIG.dateLabel}
-                  </p>
-                  <p
-                    className="mt-1.5"
-                    style={{
-                      fontWeight: 300,
-                      letterSpacing: "0.28em",
-                      fontSize: 11,
-                      textTransform: "uppercase",
-                      color: "#F7EFE8",
-                      textShadow: "0 1px 14px rgba(60,40,35,.5)",
-                    }}
-                  >
-                    {CONFIG.dayLabel}
-                  </p>
-                </motion.div>
-              </div>
+                  {CONFIG.dateLabel}
+                </p>
+                <p
+                  className="mt-1.5"
+                  style={{
+                    fontWeight: 300,
+                    letterSpacing: "0.28em",
+                    fontSize: 11,
+                    textTransform: "uppercase",
+                    color: "#F7EFE8",
+                    textShadow: "0 1px 14px rgba(60,40,35,.5)",
+                  }}
+                >
+                  {CONFIG.dayLabel}
+                </p>
+              </motion.div>
 
               <motion.div
                 initial={{ opacity: 0 }}
@@ -922,7 +921,7 @@ export default function Home() {
                   {
                     who: "Сүйт бүсгүй · " + CONFIG.bride,
                     no: "MN610005005312464838",
-                    bank: "Голомт банк",
+                    bank: "Хаан банк",
                   },
                 ].map((a, i) => (
                   <div
