@@ -9,7 +9,6 @@ import {
   onSnapshot,
   orderBy,
   query,
-  limit,
   type DocumentData,
   type QueryDocumentSnapshot,
   type Timestamp,
@@ -313,7 +312,6 @@ export default function Home() {
     const commentsQuery = query(
       collection(db, COMMENTS_COLLECTION),
       orderBy("createdAt", "desc"),
-      limit(6),
     );
 
     const unsubscribe = onSnapshot(
